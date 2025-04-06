@@ -70,7 +70,10 @@ class GitCommand:
             )
             return result
         except subprocess.CalledProcessError as e:
-            logger.error(f"コマンド実行エラー: {e.stderr.strip()}")
+            logger.error(f"コマンド実行エラー: {e.stderr.strip() if e.stderr else str(e)}")
+            # 例外を再スローするが、stderrとstdoutを確保
+            e.stderr_content = e.stderr.strip() if e.stderr else ""
+            e.stdout_content = e.stdout.strip() if e.stdout else ""
             raise
     
     def execute(self) -> Dict[str, Any]:
