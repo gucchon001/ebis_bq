@@ -252,8 +252,12 @@ function Execute-GitCommand {
     
     # 仮想環境のアクティベート
     if (Test-Path $(Join-Path $VENV_PATH 'Scripts\Activate.ps1')) {
-        Write-Host '仮想環境をアクティベートしています...' -ForegroundColor Green
+        Write-Host '[INFO] 仮想環境をアクティベートしています...' -ForegroundColor Green
         & $(Join-Path $VENV_PATH 'Scripts\Activate.ps1')
+        
+        # 仮想環境が正しくアクティベートされたか確認
+        $envActive = Test-Path env:VIRTUAL_ENV
+        Write-Host "[DEBUG] 仮想環境のアクティベート状態: $envActive" -ForegroundColor Cyan
         
         # PYTHONPATHを設定してプロジェクトルートを参照できるようにする
         $env:PYTHONPATH = $scriptDir
@@ -441,7 +445,12 @@ function Execute-GitCommand {
     
     # 仮想環境の非アクティベート
     if (Get-Command deactivate -ErrorAction SilentlyContinue) {
+        Write-Host '[INFO] 仮想環境をディアクティベートしています...' -ForegroundColor Green
         deactivate
+        
+        # 仮想環境が正しくディアクティベートされたか確認
+        $envActive = Test-Path env:VIRTUAL_ENV
+        Write-Host "[DEBUG] 仮想環境のディアクティベート後の状態: $envActive" -ForegroundColor Cyan
     }
     
     Write-Host ''

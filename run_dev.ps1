@@ -1,4 +1,4 @@
-# run_dev.ps1
+﻿# run_dev.ps1
 # 開発環境用スクリプト実行ランチャー
 
 # 文字エンコーディングをUTF-8に設定
@@ -142,4 +142,4 @@ if (Test-Path Function:\deactivate) {
 }
 
 Write-Host "[INFO] 実行が完了しました。" -ForegroundColor Green
-Read-Host "Enterキーを押して終了します" 
+Read-Host "Enterキーを押して終了します"
