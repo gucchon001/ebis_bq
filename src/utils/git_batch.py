@@ -459,12 +459,20 @@ class GitBatchProcessor:
                 command = command_class(repo, self.options)
                 result = command.execute()
                 results[repo_name] = result
-                logger.info(f"結果: {result['output']}")
+                logger.info(f"結果: {result.get('output', '')}")
             except Exception as e:
-                logger.error(f"エラー発生: {str(e)}")
+                error_msg = ""
+                if hasattr(e, 'stderr_content') and e.stderr_content:
+                    error_msg = e.stderr_content
+                elif isinstance(e, subprocess.CalledProcessError) and e.stderr:
+                    error_msg = e.stderr.strip()
+                else:
+                    error_msg = str(e)
+                
+                logger.error(f"エラー発生: {error_msg}")
                 results[repo_name] = {
                     'success': False,
-                    'error': str(e)
+                    'error': error_msg
                 }
         
         self.results.update(results)
