@@ -300,7 +300,7 @@ function Execute-GitCommand {
     }
     
     # 必要なスクリプトの存在確認
-    if ($command -in 'ai-commit', 'analyze-pr', 'analyze-code', 'suggest-implementation', 'check-sensitive-info', 'force-pull', 'full-push', 'ai-full-push') {
+    if ($command -in 'ai-commit', 'analyze-pr', 'analyze-code', 'suggest-implementation', 'check-sensitive-info', 'force-pull', 'ai-full-push') {
         if (-not (Test-Path $OPENAI_SCRIPT_PATH)) {
             Write-Host "エラー: OpenAI Gitヘルパースクリプトが見つかりません: $OPENAI_SCRIPT_PATH" -ForegroundColor Red
             return
@@ -340,11 +340,58 @@ function Execute-GitCommand {
         }
         'force-pull' {
             Write-Host '[処理] リモート状態に強制的に更新しています...' -ForegroundColor Cyan
-            & $PYTHON_CMD $OPENAI_SCRIPT_PATH force-pull --repo $repo_path
+            # force-pullもOpenAIヘルパーでサポートされていない可能性があるため直接実装
+            Write-Host '[INFO] リモートブランチの最新の状態に更新しています...'
+            
+            # 現在のブランチ名を取得
+            $currentBranch = git rev-parse --abbrev-ref HEAD
+            if ([string]::IsNullOrEmpty($branch)) {
+                $branch = $currentBranch
+            }
+            
+            # 変更を退避
+            git stash
+            
+            # リモートから最新の情報を取得
+            git fetch --all
+            
+            # 強制的にリモートの状態に更新
+            git reset --hard origin/$branch
+            
+            # 変更を戻す (競合がある場合はスキップ)
+            git stash pop
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host '[WARNING] 一部のローカル変更を復元できませんでした（競合の可能性があります）' -ForegroundColor Yellow
+            } else {
+                Write-Host '[INFO] リモートの状態に強制的に更新しました' -ForegroundColor Green
+            }
         }
         'full-push' {
             Write-Host '[処理] 追加、コミット、プッシュを一括実行しています...' -ForegroundColor Cyan
-            & $PYTHON_CMD $OPENAI_SCRIPT_PATH full-push --repo $repo_path
+            # full-pushはGitヘルパースクリプトではなくGitバッチスクリプトで処理
+            Write-Host '[INFO] 変更を追加してコミットしています...'
+            git add .
+            
+            # コミットメッセージが指定されていない場合はユーザーに入力を求める
+            if ([string]::IsNullOrEmpty($commit_message)) {
+                $commit_message = Read-Host 'コミットメッセージを入力してください'
+                if ([string]::IsNullOrEmpty($commit_message)) {
+                    $commit_message = "更新: $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+                    Write-Host "コミットメッセージが指定されなかったため、自動生成しました: $commit_message" -ForegroundColor Yellow
+                }
+            }
+            
+            git commit -m $commit_message
+            
+            Write-Host '[INFO] リモートリポジトリにプッシュしています...'
+            git push
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host '[ERROR] 処理中にエラーが発生しました。' -ForegroundColor Red
+            } else {
+                Write-Host '[INFO] 処理が正常に完了しました。' -ForegroundColor Green
+            }
         }
         'ai-full-push' {
             Write-Host 'AIアシスト付きフルプッシュを実行しています...' -ForegroundColor Cyan
