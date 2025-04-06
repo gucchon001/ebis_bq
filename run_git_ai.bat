@@ -1,7 +1,7 @@
 @echo off
-setlocal enabledelayedexpansion
-rem Windows環境での文字化け対策 - 文字コードをUTF-8に設定
+rem 文字化け対策 (UTF-8)
 chcp 65001 >nul
+setlocal enabledelayedexpansion
 
 rem ===== OpenAI APIを利用したGit操作ツール =====
 rem GitコマンドをAIで強化する機能を提供します。
@@ -22,6 +22,7 @@ set "BRANCH="
 set "COMMIT_MESSAGE="
 set "USE_RECURSIVE="
 set "DEPTH=2"
+set "GITHUB_URL="
 
 rem GitHubデスクトップが自動起動しないようにする環境変数設定
 set "GIT_OPTIONAL_LOCKS=0"
@@ -29,58 +30,6 @@ set "EDITOR=notepad"
 set "GIT_EDITOR=notepad"
 set "GIT_TERMINAL_PROMPT=1"
 set "GIT_CREDENTIAL_HELPER="
-
-rem コマンドライン引数の最初の引数をコマンドとして設定
-if "%~1" NEQ "" (
-    set "COMMAND=%~1"
-    shift
-)
-
-rem ヘルプ表示
-if "%COMMAND%"=="--help" (
-    echo ===== OpenAI APIを利用したGit操作ツール =====
-    echo 使用方法:
-    echo   run_git_ai.bat [コマンド] [オプション]
-    echo.
-    echo コマンド:
-    echo   ai-commit             : 変更内容からコミットメッセージを自動生成してコミット
-    echo   analyze-pr            : プルリクエストを分析して要約
-    echo   analyze-code          : 指定されたファイルのコード品質を分析
-    echo   suggest-implementation: 新機能の実装案を提案
-    echo   status                : 全リポジトリの状態を表示
-    echo   pull                  : 全リポジトリのpullを実行
-    echo   push                  : 全リポジトリのpushを実行
-    echo   commit                : 全リポジトリの変更をコミット
-    echo   checkout              : 全リポジトリで指定ブランチにチェックアウト
-    echo   reset                 : 全リポジトリの変更をリセット
-    echo   clean                 : 全リポジトリの追跡されていないファイルを削除
-    echo   check-sensitive-info  : 機密情報のチェック (プッシュ前にAPIキーなどをチェック)
-    echo   force-pull            : リモートの最新状態に強制的に合わせる
-    echo   full-push             : 変更をadd、commit、pushまで一気に実行
-    echo   ai-full-push          : 変更をadd、AI生成メッセージでcommit、pushまで一気に実行
-    echo   git-init              : リポジトリ初期化、GitHub URL設定、機密情報チェック、初期コミットまで実行
-    echo.
-    echo オプション:
-    echo   --repo ^<dir^>         : Gitリポジトリのパスを指定 (デフォルト: カレントディレクトリ)
-    echo   --branch ^<name^>      : ブランチ名を指定 (checkout, pullコマンド用)
-    echo   --message ^<msg^>      : コミットメッセージを指定
-    echo   --pr-url ^<url^>       : 分析するプルリクエストのURL
-    echo   --file ^<path^>        : 分析対象のファイルパス
-    echo   --feature ^<desc^>     : 実装する機能の説明
-    echo   --target-file ^<file^> : 機能を実装するターゲットファイル名
-    echo   --recursive           : サブディレクトリも再帰的に検索 (デフォルト: 無効)
-    echo   --depth ^<num^>        : 再帰検索時の最大深度 (デフォルト: 2)
-    echo   --help                : このヘルプメッセージを表示
-    echo.
-    echo 例:
-    echo   run_git_ai.bat ai-commit
-    echo   run_git_ai.bat analyze-pr --pr-url https://github.com/user/repo/pull/123
-    echo   run_git_ai.bat analyze-code --file src/main.py
-    echo   run_git_ai.bat suggest-implementation --feature "GitHubのIssueを自動で要約する機能"
-    echo   run_git_ai.bat pull --branch main --recursive
-    echo   run_git_ai.bat commit --message "変更コミット"
-    goto END
-)
 
 rem コマンドライン引数の解析
 :parse_args
@@ -167,6 +116,11 @@ if "%~1"=="git-init" (
     shift
     goto parse_args
 )
+if "%~1"=="--help" (
+    set "COMMAND=--help"
+    shift
+    goto parse_args
+)
 
 rem オプション
 if "%~1"=="--repo" (
@@ -222,12 +176,66 @@ if "%~1"=="--depth" (
     shift
     goto parse_args
 )
+if "%~1"=="--github-url" (
+    set "GITHUB_URL=%~2"
+    shift
+    shift
+    goto parse_args
+)
 
 echo 警告: 不明なオプション "%~1" は無視されます
 shift
 goto parse_args
 
 :setup_environment
+rem ヘルプ表示
+if "%COMMAND%"=="--help" (
+    echo ===== OpenAI APIを利用したGit操作ツール =====
+    echo 使用方法:
+    echo   run_git_ai.bat [コマンド] [オプション]
+    echo.
+    echo コマンド:
+    echo   ai-commit             : 変更内容からコミットメッセージを自動生成してコミット
+    echo   analyze-pr            : プルリクエストを分析して要約
+    echo   analyze-code          : 指定されたファイルのコード品質を分析
+    echo   suggest-implementation: 新機能の実装案を提案
+    echo   status                : 全リポジトリの状態を表示
+    echo   pull                  : 全リポジトリのpullを実行
+    echo   push                  : 全リポジトリのpushを実行
+    echo   commit                : 全リポジトリの変更をコミット
+    echo   checkout              : 全リポジトリで指定ブランチにチェックアウト
+    echo   reset                 : 全リポジトリの変更をリセット
+    echo   clean                 : 全リポジトリの追跡されていないファイルを削除
+    echo   check-sensitive-info  : 機密情報のチェック (プッシュ前にAPIキーなどをチェック)
+    echo   force-pull            : リモートの最新状態に強制的に合わせる
+    echo   full-push             : 変更をadd、commit、pushまで一気に実行
+    echo   ai-full-push          : 変更をadd、AI生成メッセージでcommit、pushまで一気に実行
+    echo   git-init              : リポジトリ初期化、GitHub URL設定、機密情報チェック、初期コミットまで実行
+    echo.
+    echo オプション:
+    echo   --repo ^<dir^>         : Gitリポジトリのパスを指定 (デフォルト: カレントディレクトリ)
+    echo   --branch ^<name^>      : ブランチ名を指定 (checkout, pullコマンド用)
+    echo   --message ^<msg^>      : コミットメッセージを指定
+    echo   --pr-url ^<url^>       : 分析するプルリクエストのURL
+    echo   --file ^<path^>        : 分析対象のファイルパス
+    echo   --feature ^<desc^>     : 実装する機能の説明
+    echo   --target-file ^<file^> : 機能を実装するターゲットファイル名
+    echo   --recursive           : サブディレクトリも再帰的に検索 (デフォルト: 無効)
+    echo   --depth ^<num^>        : 再帰検索時の最大深度 (デフォルト: 2)
+    echo   --github-url ^<url^>   : GitHubリポジトリのURL (git-initコマンド用)
+    echo   --help                : このヘルプメッセージを表示
+    echo.
+    echo 例:
+    echo   run_git_ai.bat ai-commit
+    echo   run_git_ai.bat analyze-pr --pr-url https://github.com/user/repo/pull/123
+    echo   run_git_ai.bat analyze-code --file src/main.py
+    echo   run_git_ai.bat suggest-implementation --feature "GitHubのIssueを自動で要約する機能"
+    echo   run_git_ai.bat pull --branch main --recursive
+    echo   run_git_ai.bat commit --message "変更コミット"
+    echo   run_git_ai.bat git-init --github-url https://github.com/username/repo.git
+    goto END
+)
+
 rem コマンドが指定されていない場合はメニューを表示
 if "%COMMAND%"=="" (
     echo 実行するGitコマンドを選択してください:
@@ -318,6 +326,14 @@ if "%COMMAND%"=="checkout" if "%BRANCH%"=="" (
     )
 )
 
+if "%COMMAND%"=="git-init" if "%GITHUB_URL%"=="" (
+    set /p "GITHUB_URL=GitHub リポジトリURLを入力してください (例: https://github.com/username/repo.git): "
+    if "!GITHUB_URL!"=="" (
+        echo エラー: GitHub URLは必須です。
+        goto END
+    )
+)
+
 rem 再帰検索の確認
 if not defined USE_RECURSIVE (
     set /p "RECURSIVE_CHOICE=サブディレクトリも再帰的に検索しますか？ (Y/N): "
@@ -338,6 +354,44 @@ if exist "%VENV_PATH%\Scripts\activate.bat" (
     call "%VENV_PATH%\Scripts\activate.bat"
 ) else (
     echo [INFO] 仮想環境が見つかりません。システムのPythonを使用します。
+)
+
+rem git-initコマンドの処理（特別なケース）
+if "%COMMAND%"=="git-init" (
+    echo [処理] リポジトリの初期化と設定を行います...
+    
+    echo Gitリポジトリを初期化しています...
+    git -c credential.helper="" -c core.editor=notepad -c core.autocrlf=true init
+    if !ERRORLEVEL! neq 0 (
+        echo エラー: リポジトリの初期化に失敗しました。
+        goto END
+    )
+    
+    echo リモートリポジトリを設定しています: !GITHUB_URL!
+    git -c credential.helper="" remote add origin !GITHUB_URL!
+    if !ERRORLEVEL! neq 0 (
+        echo エラー: リモートリポジトリの設定に失敗しました。
+        goto END
+    )
+    
+    echo 初期コミットを実行しています...
+    git add .
+    git -c credential.helper="" commit -m "Initial commit"
+    if !ERRORLEVEL! neq 0 (
+        echo エラー: コミットに失敗しました。
+        goto END
+    )
+    
+    echo プッシュを実行しています...
+    git -c credential.helper="" push -u origin main
+    if !ERRORLEVEL! neq 0 (
+        echo エラー: プッシュに失敗しました。
+        goto END
+    )
+    
+    echo リポジトリの初期化と初期コミットが完了しました。
+    echo リモートリポジトリURL: !GITHUB_URL!
+    goto END
 )
 
 rem 必要なスクリプトの存在確認
@@ -446,50 +500,6 @@ if "%COMMAND%"=="ai-full-push" (
     )
 )
 
-if "%COMMAND%"=="git-init" (
-    echo リポジトリの初期化と設定を行います...
-    
-    rem 1. git initで初期化
-    echo Gitリポジトリを初期化しています...
-    git -c credential.helper="" -c core.editor=notepad -c core.autocrlf=true init
-    if !ERRORLEVEL! neq 0 (
-        echo エラー: リポジトリの初期化に失敗しました。
-        goto END
-    )
-    
-    rem 2. GitHub URLの入力プロンプト
-    set /p "GITHUB_URL=GitHub リポジトリURLを入力してください (例: https://github.com/username/repo.git): "
-    if "!GITHUB_URL!"=="" (
-        echo エラー: GitHub URLは必須です。
-        goto END
-    )
-    
-    rem 3. リモートリポジトリの設定
-    echo リモートリポジトリを設定しています...
-    git -c credential.helper="" remote add origin !GITHUB_URL!
-    if !ERRORLEVEL! neq 0 (
-        echo エラー: リモートリポジトリの設定に失敗しました。
-        goto END
-    )
-    
-    rem 4. 初期コミットとプッシュ
-    echo 初期コミットを実行しています...
-    git add .
-    git -c credential.helper="" commit -m "Initial commit"
-    
-    echo プッシュを実行しています...
-    git -c credential.helper="" push -u origin main
-    
-    if !ERRORLEVEL! neq 0 (
-        echo エラー: 初期コミットとプッシュに失敗しました。
-        goto END
-    )
-    
-    echo リポジトリの初期化と初期コミットが完了しました。
-    echo リモートリポジトリURL: !GITHUB_URL!
-    goto END
-)
-
 rem 標準Gitコマンドの場合
 set "PYTHON_ARGS=%GIT_BATCH_SCRIPT% %COMMAND% --path %REPO_PATH% --depth %DEPTH% %USE_RECURSIVE%"
 
@@ -511,6 +521,7 @@ if not "%FEATURE%"=="" echo 機能説明: %FEATURE%
 if not "%TARGET_FILE%"=="" echo ターゲットファイル: %TARGET_FILE%
 if not "%BRANCH%"=="" echo ブランチ: %BRANCH%
 if not "%COMMIT_MESSAGE%"=="" echo コミットメッセージ: %COMMIT_MESSAGE%
+if not "%GITHUB_URL%"=="" echo GitHub URL: %GITHUB_URL%
 if "%USE_RECURSIVE%"=="--recursive" echo 再帰検索: 有効 (最大深度: %DEPTH%)
 echo ===========================================================
 echo.
