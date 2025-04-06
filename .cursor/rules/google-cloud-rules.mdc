@@ -1,0 +1,144 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+これらの設定は Google Cloud サービスへの接続に必要な情報です。
+
+## 認証・接続方法
+
+BigQuery および GCS への認証・接続を行うには、`GoogleCloudAuth` クラスを使用します。このクラスは、`src/utils/bigquery.py` に実装されています。
+
+### 基本的な使い方
+
+```python
+from src.utils.bigquery import GoogleCloudAuth
+
+# GoogleCloudAuthのインスタンスを取得
+auth = GoogleCloudAuth()
+
+# BigQueryに接続
+bq_client = auth.authenticate_bigquery()
+
+# GCSに接続
+gcs_client = auth.authenticate_gcs()
+```
+
+### データセットとテーブルの確認
+
+```python
+# データセットの存在確認
+dataset_exists = auth.dataset_exists("my_dataset")
+
+# テーブルの存在確認
+table_exists = auth.table_exists("my_table", "my_dataset")
+
+# テーブルスキーマの取得
+schema = auth.get_table_schema("my_table", "my_dataset")
+```
+
+### GCSでのファイル操作
+
+```python
+# バケットの存在確認
+bucket_exists = auth.bucket_exists("my-bucket")
+
+# ファイルのアップロード（ファイルパスから）
+blob = auth.upload_file("local/path/to/file.txt", "destination/path/file.txt")
+
+# ファイルのアップロード（メモリオブジェクトから）
+with open("local/path/to/file.txt", "rb") as f:
+    blob = auth.upload_file(f, "destination/path/file.txt")
+
+# ファイル一覧の取得
+blobs = auth.list_blobs(prefix="path/to/files/")
+```
+
+## テスト方法
+
+### テストの実行方法
+
+Google Cloud サービスとの接続テストは以下のコマンドで実行できます：
+
+```bash
+pytest -v tests/test_google_cloud_auth.py
+```
+
+特定のテストのみを実行するには、以下のように指定します：
+
+```bash
+pytest -v tests/test_google_cloud_auth.py::test_bigquery_auth
+pytest -v tests/test_google_cloud_auth.py::test_gcs_auth
+```
+
+### テストに必要な設定
+
+テストを実行するには、以下の条件が必要です：
+
+1. 有効なサービスアカウントキーファイルが `config/google-service-account.json` に配置されていること
+2. 必要な環境変数が `secrets.env` に設定されていること
+3. 指定されたプロジェクト、データセット、テーブル、バケットが GCP 上に存在すること
+
+### テストで確認する内容
+
+1. サービスアカウントファイルの存在確認
+2. BigQuery への認証
+3. GCS への認証
+4. データセットの存在確認
+5. テーブルの存在確認とスキーマ取得
+6. バケットの存在確認
+7. ファイルのアップロードとリスト取得
+
+テストファイルは `tests/sample_files/sample.txt` を使用します。プロジェクト作成時に自動的に生成されますが、存在しない場合はテスト実行時に自動生成されます。
+
+## エラー対処方法
+
+### 認証エラー
+
+認証エラーが発生した場合、以下を確認してください：
+
+1. サービスアカウントキーファイルが正しい場所に配置されているか
+2. キーファイルが有効であるか（破損していないか）
+3. サービスアカウントに適切な権限が付与されているか
+
+### リソースアクセスエラー
+
+リソース（データセット、テーブル、バケットなど）へのアクセスエラーが発生した場合、以下を確認してください：
+
+1. リソースが実際に存在するか
+2. サービスアカウントにそのリソースへのアクセス権限があるか
+3. 環境変数で指定したリソース名が正しいか
+
+### 権限設定
+
+以下は、サービスアカウントに必要な最低限の権限です：
+
+- BigQuery データ閲覧者（BigQuery Data Viewer）
+- BigQuery ユーザー（BigQuery User）
+- Storage オブジェクト閲覧者（Storage Object Viewer）
+- Storage オブジェクト作成者（Storage Object Creator）
+
+## ベストプラクティス
+
+1. **サービスアカウントキーの管理**
+   - キーファイルは安全に管理し、バージョン管理システムには登録しないでください
+   - 必要最小限の権限をサービスアカウントに付与してください
+
+2. **リソース命名**
+   - 環境（開発、テスト、本番）ごとに異なるリソース名を使用してください
+   - 命名規則を統一し、混乱を避けてください
+
+3. **エラーハンドリング**
+   - GoogleCloudAuth クラスのメソッドは適切なエラーハンドリングを実装していますが、さらに上位レベルでの対応も検討してください
+   - リトライロジックを実装することで、一時的な接続問題に対応できます
+
+4. **コストと使用量の監視**
+   - GCP の利用には料金が発生する場合があります
+   - 特に大量のデータ処理やストレージを使用する場合は、使用状況を定期的に確認してください
+
+## 注意事項
+
+- 本プロジェクトでは同一のサービスアカウントを使用して BigQuery と GCS の両方にアクセスします
+- より高度なセキュリティが必要な場合は、サービスごとに異なるサービスアカウントを使用することも検討してください
+- BigQuery のクエリ実行やデータ書き込み機能は、必要に応じて別途実装してください

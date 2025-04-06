@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>フォームテスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        form { max-width: 500px; margin: 0 auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; text-align: center; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="email"], input[type="password"], textarea, select { 
+            width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ddd; 
+            border-radius: 4px; box-sizing: border-box; 
+        }
+        .radio-group, .checkbox-group { margin-bottom: 15px; }
+        .radio-item, .checkbox-item { margin-bottom: 5px; }
+        button { 
+            background-color: #4CAF50; color: white; padding: 10px 15px; 
+            border: none; border-radius: 4px; cursor: pointer; font-size: 16px; 
+            display: block; margin: 0 auto;
+        }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>テスト用フォーム</h1>
+    
+    <form id="testForm" action="#" method="post">
+        <!-- 基本情報セクション -->
+        <h2>基本情報</h2>
+        
+        <div>
+            <label for="username">ユーザー名:</label>
+            <input type="text" id="username" name="username" placeholder="例: yamada_taro">
+        </div>
+        
+        <div>
+            <label for="email">メールアドレス:</label>
+            <input type="email" id="email" name="email" placeholder="例: example@mail.com">
+        </div>
+        
+        <div>
+            <label for="password">パスワード:</label>
+            <input type="password" id="password" name="password">
+        </div>
+        
+        <!-- 追加情報セクション -->
+        <h2>追加情報</h2>
+        
+        <div>
+            <label for="age">年齢:</label>
+            <input type="text" id="age" name="age" placeholder="例: 30">
+        </div>
+        
+        <div>
+            <label>性別:</label>
+            <div class="radio-group">
+                <div class="radio-item">
+                    <input type="radio" id="male" name="gender" value="male">
+                    <label for="male">男性</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" id="female" name="gender" value="female">
+                    <label for="female">女性</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" id="other" name="gender" value="other">
+                    <label for="other">その他</label>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <label>興味のある分野:</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="tech" name="interests" value="tech">
+                    <label for="tech">テクノロジー</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="science" name="interests" value="science">
+                    <label for="science">科学</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="art" name="interests" value="art">
+                    <label for="art">芸術</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="sports" name="interests" value="sports">
+                    <label for="sports">スポーツ</label>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <label for="country">国:</label>
+            <select id="country" name="country">
+                <option value="">選択してください</option>
+                <option value="jp">日本</option>
+                <option value="us">アメリカ</option>
+                <option value="uk">イギリス</option>
+                <option value="fr">フランス</option>
+                <option value="de">ドイツ</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="message">メッセージ:</label>
+            <textarea id="message" name="message" rows="4" placeholder="ここにメッセージを入力してください"></textarea>
+        </div>
+        
+        <div>
+            <input type="checkbox" id="terms" name="terms" value="agree">
+            <label for="terms">利用規約に同意します</label>
+        </div>
+        
+        <button type="submit" id="submitBtn">送信</button>
+    </form>
+    
+    <script>
+        // フォーム送信時の処理
+        document.getElementById('testForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            let message = 'フォームが送信されました。\n\n';
+            
+            for (const [key, value] of formData.entries()) {
+                message += `${key}: ${value}\n`;
+            }
+            
+            alert(message);
+        });
+    </script>
+</body>
+</html> 

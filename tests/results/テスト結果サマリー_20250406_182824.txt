@@ -1,0 +1,39 @@
+================================================================================
+                         TEST RESULT SUMMARY (2025-04-06 18:28:24)
+================================================================================
+
+TEST NAME                                                   RESULT    FUNCTIONALITY ASSURED
+--------------------------------------------------------------------------------
+access > プロジェクト構造確認                                         PASS      基本ディレクトリ構造が適切で、アプリケーションが正しく実行できる環境が整っている
+access > モジュール構造確認                                          PASS      ビジネスロジックモジュールの構造が維持され、機能拡張時の整合性が担保されている
+access > ユーティリティ確認                                          PASS      共通ユーティリティが適切に構成され、環境管理とロギング機能が利用可能な状態にある
+access > ログディレクトリ確認                                         PASS      ログ出力先が確保され、アプリケーションの動作ログが適切に記録できる
+access > 設定ファイル確認                                           PASS      環境変数と設定ファイルが正しく配置され、アプリケーションが設定を適切に読み込める
+error handling > test_alert_and_confirm_dialogs             PASS      アラートと確認ダイアログの適切な処理を検証
+error handling > test_invalid_protocol                      PASS      無効なプロトコルのURLへのアクセス時のエラー処理を検証
+error handling > test_nonexistent_page                      PASS      存在しないページへのアクセス時のエラー処理を検証
+error handling > test_page_with_errors                      PASS      エラーが含まれるページの処理を検証
+error handling > test_redirect_handling                     PASS      リダイレクトの適切な処理を検証
+error handling > test_slow_loading_page                     PASS      遅いページ読み込みの適切な処理を検証
+google cloud > test_credentials_loading                     PASS      サービスアカウント認証情報が適切に読み込めるか確認する
+google cloud > test_dataset_exists                          PASS      BigQueryのデータセットが存在するか確認する
+google cloud > test_get_table_schema                        PASS      BigQueryのテーブルスキーマを取得できるか確認する
+google cloud > test_query_execution                         PASS      基本的なSQLクエリが実行できるか確認する
+google cloud > test_table_exists                            PASS      BigQueryのテーブルが存在するか確認する
+login analyzer > test_login_failure_detection               PASS      ログイン失敗時のエラーメッセージを適切に検出できる
+login analyzer > test_login_form_detection                  PASS      ログインフォームを自動的に検出し、入力フィールドやボタンを識別できる
+login analyzer > test_login_page_performance                PASS      ページロード時間の計測とパフォーマンス検証が適切に行える
+login analyzer > test_login_security_features               PASS      HTTPS、CSRF対策、二要素認証などのセキュリティ機能の有無を検出できる
+login analyzer > test_login_success_workflow                PASS      ログイン成功後の画面遷移と成功メッセージを正しく検証できる
+page analyzer > test_basic_page_analysis                    PASS      基本的なページ構造解析機能を検証
+page analyzer > test_form_automation                        PASS      フォームの自動入力と送信機能を検証
+page analyzer > test_interactive_elements                   PASS      インタラクティブ要素の識別機能を検証
+page analyzer > test_page_state_detection                   PASS      ページの状態検出機能を検証
+page analyzer > test_search_elements_by_text                PASS      テキスト内容による要素検索機能を検証
+selenium > test_browser_selectors_initialization            PASS      セレクタCSVファイルが正しく読み込まれ、ログイン用セレクタが適切に初期化される
+selenium > test_dummy_login_page                            PASS      JavaScriptでのログインフォーム操作とアラート処理が適切に実行できる
+selenium > test_httpbin_form_submission                     PASS      外部サイトへのフォーム送信とレスポンス検証が正常に行える
+--------------------------------------------------------------------------------
+Total: 29 tests (29 passed / 0 failed)
+Success rate: 100.0%
+================================================================================

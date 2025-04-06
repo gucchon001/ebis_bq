@@ -1,0 +1,22 @@
+{
+  "test_basic_page_analysis": {
+    "passed": true,
+    "description": "基本的なページ構造解析機能を検証"
+  },
+  "test_form_automation": {
+    "passed": true,
+    "description": "フォームの自動入力と送信機能を検証"
+  },
+  "test_search_elements_by_text": {
+    "passed": true,
+    "description": "テキスト内容による要素検索機能を検証"
+  },
+  "test_interactive_elements": {
+    "passed": true,
+    "description": "インタラクティブ要素の識別機能を検証"
+  },
+  "test_page_state_detection": {
+    "passed": true,
+    "description": "ページの状態検出機能を検証"
+  }
+} 

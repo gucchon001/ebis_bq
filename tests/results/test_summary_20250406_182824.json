@@ -1,0 +1,125 @@
+{
+  "timestamp": "2025-04-06 18:28:24",
+  "total_tests": 29,
+  "passed_tests": 29,
+  "failed_tests": 0,
+  "pass_rate": 100.0,
+  "results": {
+    "access_test_results::プロジェクト構造確認": {
+      "passed": true,
+      "description": "基本ディレクトリ構造が適切で、アプリケーションが正しく実行できる環境が整っている"
+    },
+    "access_test_results::設定ファイル確認": {
+      "passed": true,
+      "description": "環境変数と設定ファイルが正しく配置され、アプリケーションが設定を適切に読み込める"
+    },
+    "access_test_results::モジュール構造確認": {
+      "passed": true,
+      "description": "ビジネスロジックモジュールの構造が維持され、機能拡張時の整合性が担保されている"
+    },
+    "access_test_results::ユーティリティ確認": {
+      "passed": true,
+      "description": "共通ユーティリティが適切に構成され、環境管理とロギング機能が利用可能な状態にある"
+    },
+    "access_test_results::ログディレクトリ確認": {
+      "passed": true,
+      "description": "ログ出力先が確保され、アプリケーションの動作ログが適切に記録できる"
+    },
+    "error_handling_test_results::test_nonexistent_page": {
+      "passed": true,
+      "description": "存在しないページへのアクセス時のエラー処理を検証"
+    },
+    "error_handling_test_results::test_invalid_protocol": {
+      "passed": true,
+      "description": "無効なプロトコルのURLへのアクセス時のエラー処理を検証"
+    },
+    "error_handling_test_results::test_page_with_errors": {
+      "passed": true,
+      "description": "エラーが含まれるページの処理を検証"
+    },
+    "error_handling_test_results::test_redirect_handling": {
+      "passed": true,
+      "description": "リダイレクトの適切な処理を検証"
+    },
+    "error_handling_test_results::test_slow_loading_page": {
+      "passed": true,
+      "description": "遅いページ読み込みの適切な処理を検証"
+    },
+    "error_handling_test_results::test_alert_and_confirm_dialogs": {
+      "passed": true,
+      "description": "アラートと確認ダイアログの適切な処理を検証"
+    },
+    "google_cloud_test_results::test_dataset_exists": {
+      "passed": true,
+      "description": "BigQueryのデータセットが存在するか確認する"
+    },
+    "google_cloud_test_results::test_table_exists": {
+      "passed": true,
+      "description": "BigQueryのテーブルが存在するか確認する"
+    },
+    "google_cloud_test_results::test_get_table_schema": {
+      "passed": true,
+      "description": "BigQueryのテーブルスキーマを取得できるか確認する"
+    },
+    "google_cloud_test_results::test_credentials_loading": {
+      "passed": true,
+      "description": "サービスアカウント認証情報が適切に読み込めるか確認する"
+    },
+    "google_cloud_test_results::test_query_execution": {
+      "passed": true,
+      "description": "基本的なSQLクエリが実行できるか確認する"
+    },
+    "login_analyzer_test_results::test_login_form_detection": {
+      "passed": true,
+      "description": "ログインフォームを自動的に検出し、入力フィールドやボタンを識別できる"
+    },
+    "login_analyzer_test_results::test_login_failure_detection": {
+      "passed": true,
+      "description": "ログイン失敗時のエラーメッセージを適切に検出できる"
+    },
+    "login_analyzer_test_results::test_login_security_features": {
+      "passed": true,
+      "description": "HTTPS、CSRF対策、二要素認証などのセキュリティ機能の有無を検出できる"
+    },
+    "login_analyzer_test_results::test_login_page_performance": {
+      "passed": true,
+      "description": "ページロード時間の計測とパフォーマンス検証が適切に行える"
+    },
+    "login_analyzer_test_results::test_login_success_workflow": {
+      "passed": true,
+      "description": "ログイン成功後の画面遷移と成功メッセージを正しく検証できる"
+    },
+    "page_analyzer_test_results::test_basic_page_analysis": {
+      "passed": true,
+      "description": "基本的なページ構造解析機能を検証"
+    },
+    "page_analyzer_test_results::test_form_automation": {
+      "passed": true,
+      "description": "フォームの自動入力と送信機能を検証"
+    },
+    "page_analyzer_test_results::test_search_elements_by_text": {
+      "passed": true,
+      "description": "テキスト内容による要素検索機能を検証"
+    },
+    "page_analyzer_test_results::test_interactive_elements": {
+      "passed": true,
+      "description": "インタラクティブ要素の識別機能を検証"
+    },
+    "page_analyzer_test_results::test_page_state_detection": {
+      "passed": true,
+      "description": "ページの状態検出機能を検証"
+    },
+    "selenium_test_results::test_browser_selectors_initialization": {
+      "passed": true,
+      "description": "セレクタCSVファイルが正しく読み込まれ、ログイン用セレクタが適切に初期化される"
+    },
+    "selenium_test_results::test_httpbin_form_submission": {
+      "passed": true,
+      "description": "外部サイトへのフォーム送信とレスポンス検証が正常に行える"
+    },
+    "selenium_test_results::test_dummy_login_page": {
+      "passed": true,
+      "description": "JavaScriptでのログインフォーム操作とアラート処理が適切に実行できる"
+    }
+  }
+}

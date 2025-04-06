@@ -1,0 +1,92 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>ポップアップテスト</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                button { margin: 10px; padding: 5px 10px; }
+                .popup { 
+                    display: none; position: fixed; top: 50%; left: 50%; 
+                    transform: translate(-50%, -50%); background: #fff;
+                    border: 1px solid #ccc; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                    z-index: 100;
+                }
+                .overlay {
+                    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(0,0,0,0.5); z-index: 50;
+                }
+                .cookie-notice {
+                    position: fixed; bottom: 0; left: 0; right: 0; background: #f1f1f1;
+                    padding: 10px; text-align: center; border-top: 1px solid #ddd;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>ポップアップテスト</h1>
+            
+            <h2>ブラウザダイアログテスト</h2>
+            <button id="alertBtn">アラートを表示</button>
+            <button id="confirmBtn">確認ダイアログを表示</button>
+            <button id="promptBtn">プロンプトを表示</button>
+            
+            <h2>カスタムポップアップテスト</h2>
+            <button id="modalBtn">モーダルを表示</button>
+            <div id="result"></div>
+            
+            <div id="overlay" class="overlay"></div>
+            <div id="modal" class="popup">
+                <h3>ログイン成功</h3>
+                <p>ようこそ、ユーザーさん！</p>
+                <p>お知らせ：システムメンテナンスのお知らせ</p>
+                <button id="closeModalBtn">閉じる</button>
+            </div>
+            
+            <div id="cookieNotice" class="cookie-notice">
+                <p>当サイトではCookieを使用しています。続行することで同意したことになります。</p>
+                <button id="acceptCookieBtn">同意する</button>
+            </div>
+            
+            <script>
+                // アラートボタン
+                document.getElementById('alertBtn').addEventListener('click', function() {
+                    alert('これはアラートです。');
+                });
+                
+                // 確認ダイアログボタン
+                document.getElementById('confirmBtn').addEventListener('click', function() {
+                    var result = confirm('続行しますか？');
+                    document.getElementById('result').textContent = result ? '「OK」が選択されました' : '「キャンセル」が選択されました';
+                });
+                
+                // プロンプトボタン
+                document.getElementById('promptBtn').addEventListener('click', function() {
+                    var name = prompt('お名前を入力してください：', '');
+                    if (name) {
+                        document.getElementById('result').textContent = 'こんにちは、' + name + 'さん！';
+                    } else {
+                        document.getElementById('result').textContent = 'キャンセルされました';
+                    }
+                });
+                
+                // モーダルボタン
+                document.getElementById('modalBtn').addEventListener('click', function() {
+                    document.getElementById('overlay').style.display = 'block';
+                    document.getElementById('modal').style.display = 'block';
+                });
+                
+                // モーダルを閉じるボタン
+                document.getElementById('closeModalBtn').addEventListener('click', function() {
+                    document.getElementById('overlay').style.display = 'none';
+                    document.getElementById('modal').style.display = 'none';
+                });
+                
+                // Cookie通知を閉じるボタン
+                document.getElementById('acceptCookieBtn').addEventListener('click', function() {
+                    document.getElementById('cookieNotice').style.display = 'none';
+                });
+            </script>
+        </body>
+        </html>
+        
