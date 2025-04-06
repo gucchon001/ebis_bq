@@ -538,7 +538,7 @@ def execute_git_command(command: str, **kwargs) -> Dict[str, Any]:
     
     # 存在チェック
     if not os.path.exists(repo_path):
-        return {"error": f"指定されたパスが存在しません: {repo_path}"}
+        return {"error": f"指定されたパスが存在しません: {repo_path}", "success": False}
     
     # 単一リポジトリか複数リポジトリか判断
     repos = []
@@ -553,7 +553,7 @@ def execute_git_command(command: str, **kwargs) -> Dict[str, Any]:
             repos = [repo_path]
     
     if not repos:
-        return {"error": f"Gitリポジトリが見つかりませんでした: {repo_path}"}
+        return {"error": f"Gitリポジトリが見つかりませんでした: {repo_path}", "success": False}
     
     # オプションの組み立て
     options = {}
@@ -573,9 +573,13 @@ def execute_git_command(command: str, **kwargs) -> Dict[str, Any]:
     # 結果のサマリーも追加
     summary = processor.summary()
     
+    # 成功フラグを設定
+    success = summary['failure'] == 0 and summary['total'] > 0
+    
     return {
         "results": results,
-        "summary": summary
+        "summary": summary,
+        "success": success
     }
 
 

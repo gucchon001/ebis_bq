@@ -1,12 +1,11 @@
 @echo off
-rem 文字化け対策 (UTF-8)
-chcp 65001 >nul
+chcp 65001 > nul
 setlocal enabledelayedexpansion
 
-rem ===== OpenAI APIを利用したGit操作ツール =====
-rem GitコマンドをAIで強化する機能を提供します。
+:: Git Operations Tool with OpenAI API
+:: Tool to enhance Git commands with AI capabilities
 
-rem 初期化
+:: Initialization
 set "VENV_PATH=.\venv"
 set "PYTHON_CMD=python"
 set "OPENAI_SCRIPT_PATH=src\utils\openai_git_helper.py"
@@ -24,18 +23,18 @@ set "USE_RECURSIVE="
 set "DEPTH=2"
 set "GITHUB_URL="
 
-rem GitHubデスクトップが自動起動しないようにする環境変数設定
+:: Prevent GitHub Desktop from auto-launching
 set "GIT_OPTIONAL_LOCKS=0"
 set "EDITOR=notepad"
 set "GIT_EDITOR=notepad"
 set "GIT_TERMINAL_PROMPT=1"
 set "GIT_CREDENTIAL_HELPER="
 
-rem コマンドライン引数の解析
+:: Parse command line arguments
 :parse_args
 if "%~1"=="" goto setup_environment
 
-rem コマンド
+:: Commands
 if "%~1"=="ai-commit" (
     set "COMMAND=ai-commit"
     shift
@@ -122,7 +121,7 @@ if "%~1"=="--help" (
     goto parse_args
 )
 
-rem オプション
+:: Options
 if "%~1"=="--repo" (
     set "REPO_PATH=%~2"
     shift
@@ -188,7 +187,7 @@ shift
 goto parse_args
 
 :setup_environment
-rem ヘルプ表示
+:: Display help
 if "%COMMAND%"=="--help" (
     echo ===== Git Operations Tool with OpenAI API =====
     echo Usage:
@@ -236,7 +235,7 @@ if "%COMMAND%"=="--help" (
     goto END
 )
 
-rem コマンドが指定されていない場合はメニューを表示
+:: Display menu if no command specified
 if "%COMMAND%"=="" (
     echo Select Git command to execute:
     echo   [AI-Enhanced Commands]
@@ -285,7 +284,7 @@ if "%COMMAND%"=="" (
     )
 )
 
-rem 必要なパラメータの追加入力を促す
+:: Prompt for required parameters
 if "%COMMAND%"=="analyze-pr" if "%PR_URL%"=="" (
     set /p "PR_URL=Enter PR URL to analyze: "
     if "!PR_URL!"=="" (
@@ -334,13 +333,13 @@ if "%COMMAND%"=="git-init" if "%GITHUB_URL%"=="" (
     )
 )
 
-rem 再帰検索の確認
+:: Confirm recursive search
 if not defined USE_RECURSIVE (
     set /p "RECURSIVE_CHOICE=Search subdirectories recursively? (Y/N): "
     if /i "!RECURSIVE_CHOICE!"=="Y" set "USE_RECURSIVE=--recursive"
 )
 
-rem Pythonが利用可能か確認
+:: Check if Python is available
 %PYTHON_CMD% --version >nul 2>&1
 if errorlevel 1 (
     echo Error: Python is not installed or not in PATH.
@@ -348,7 +347,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-rem 仮想環境の存在確認と有効化
+:: Check and activate virtual environment
 if exist "%VENV_PATH%\Scripts\activate.bat" (
     echo [INFO] Activating virtual environment...
     call "%VENV_PATH%\Scripts\activate.bat"
@@ -356,7 +355,7 @@ if exist "%VENV_PATH%\Scripts\activate.bat" (
     echo [INFO] Virtual environment not found. Using system Python.
 )
 
-rem git-initコマンドの処理（特別なケース）
+:: Special case: git-init command
 if "%COMMAND%"=="git-init" (
     echo [PROCESS] Initializing and configuring repository...
     
@@ -370,8 +369,8 @@ if "%COMMAND%"=="git-init" (
     echo Setting remote repository: !GITHUB_URL!
     git -c credential.helper="" remote add origin !GITHUB_URL!
     if !ERRORLEVEL! neq 0 (
-        echo Error: Failed to set remote repository.
-        goto END
+        echo Warning: Failed to add remote origin. Trying to update URL...
+        git -c credential.helper="" remote set-url origin !GITHUB_URL!
     )
     
     echo Creating initial commit...
@@ -382,7 +381,7 @@ if "%COMMAND%"=="git-init" (
         goto END
     )
     
-    echo Pushing to remote repository...
+    echo Pushing to master branch...
     git -c credential.helper="" push -u origin master
     if !ERRORLEVEL! neq 0 (
         echo Error: Failed to push.
@@ -394,7 +393,7 @@ if "%COMMAND%"=="git-init" (
     goto END
 )
 
-rem 必要なスクリプトの存在確認
+:: Check for required scripts
 if "%COMMAND%"=="ai-commit" (
     if not exist "%OPENAI_SCRIPT_PATH%" (
         echo Error: OpenAI Git helper script not found: %OPENAI_SCRIPT_PATH%
@@ -422,7 +421,7 @@ if "%COMMAND%"=="ai-commit" (
     )
 )
 
-rem コマンドの構築と実行
+:: Build and execute commands
 if "%COMMAND%"=="ai-commit" (
     echo Executing AI-assisted commit...
     %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" ai-commit --repo "%REPO_PATH%"
@@ -500,7 +499,7 @@ if "%COMMAND%"=="ai-full-push" (
     )
 )
 
-rem 標準Gitコマンドの場合
+:: For standard Git commands
 set "PYTHON_ARGS=%GIT_BATCH_SCRIPT% %COMMAND% --path %REPO_PATH% --depth %DEPTH% %USE_RECURSIVE%"
 
 if not "%BRANCH%"=="" (
@@ -535,7 +534,7 @@ if errorlevel 1 (
     echo [INFO] Processing completed successfully.
 )
 
-rem 仮想環境の非アクティブ化
+:: Deactivate virtual environment
 if exist "%VENV_PATH%\Scripts\deactivate.bat" (
     call "%VENV_PATH%\Scripts\deactivate.bat"
 )
