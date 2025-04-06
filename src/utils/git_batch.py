@@ -235,7 +235,7 @@ class GitFullPush(GitCommand):
         if not status_result.stdout.strip():
             return {
                 'success': True,
-                'output': "変更はありません。プッシュするものがありません。",
+                'output': "変更なし。プッシュするものがありません。",
                 'command': 'git status'
             }
         
@@ -249,14 +249,31 @@ class GitFullPush(GitCommand):
                 'command': 'git add --all'
             }
         
+        # ステージングエリア確認（addした後に再度確認）
+        status_after_add = self._run_command(['git', 'status', '--porcelain'])
+        if not status_after_add.stdout.strip():
+            return {
+                'success': True,
+                'output': "変更なし。プッシュするものがありません。",
+                'command': 'git status'
+            }
+        
         # コミット実行
         commit_message = self.options.get('message', f"自動コミット {time.strftime('%Y-%m-%d %H:%M:%S')}")
         try:
             commit_result = self._run_command(['git', 'commit', '-m', commit_message])
-        except Exception as e:
+        except subprocess.CalledProcessError as e:
+            # コミットエラーの場合、エラーメッセージを確認
+            if "nothing to commit" in e.stderr or "nothing added to commit" in e.stderr:
+                return {
+                    'success': True,
+                    'output': "変更なし。プッシュするものがありません。",
+                    'command': f"git commit -m '{commit_message}'"
+                }
+            # その他のエラーは失敗として扱う
             return {
                 'success': False,
-                'error': f"コミットに失敗しました: {str(e)}",
+                'error': f"コミットエラー: {str(e)}",
                 'command': f"git commit -m '{commit_message}'"
             }
         
@@ -299,19 +316,31 @@ class GitCommit(GitCommand):
         
         # 変更があるか確認
         status_result = self._run_command(['git', 'status', '--porcelain'])
-        if status_result and not status_result.stdout.strip():
+        if not status_result.stdout.strip():
             return {
                 'success': True,
-                'output': 'コミットする変更はありません',
+                'output': '変更なし',
                 'command': 'git status'
             }
         
-        commit_result = self._run_command(['git', 'commit', '-m', message])
-        return {
-            'success': commit_result.returncode == 0,
-            'output': commit_result.stdout.strip() if commit_result and commit_result.stdout else '',
-            'command': f'git commit -m "{message}"'
-        }
+        # 変更がある場合のみコミットを実行
+        try:
+            commit_result = self._run_command(['git', 'commit', '-m', message])
+            return {
+                'success': commit_result.returncode == 0,
+                'output': commit_result.stdout.strip() if commit_result and commit_result.stdout else '',
+                'command': f'git commit -m "{message}"'
+            }
+        except subprocess.CalledProcessError as e:
+            # コミットエラーの場合も成功とみなす（変更がない場合など）
+            if "nothing to commit" in e.stderr or "nothing added to commit" in e.stderr:
+                return {
+                    'success': True,
+                    'output': '変更なし',
+                    'command': f'git commit -m "{message}"'
+                }
+            # その他のエラーは再スロー
+            raise
 
 
 class GitCheckout(GitCommand):
