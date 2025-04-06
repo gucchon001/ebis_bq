@@ -382,8 +382,8 @@ if "%COMMAND%"=="git-init" (
         goto END
     )
     
-    echo Pushing to remote...
-    git -c credential.helper="" push -u origin main
+    echo Pushing to remote repository...
+    git -c credential.helper="" push -u origin master
     if !ERRORLEVEL! neq 0 (
         echo Error: Failed to push.
         goto END

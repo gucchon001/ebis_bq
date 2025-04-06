@@ -1,27 +1,28 @@
 @echo off
 chcp 65001 >nul
-setlocal enabledelayedexpansion
+setlocal
 
-set "GITHUB_URL=%1"
-if "%GITHUB_URL%"=="" (
-    set /p "GITHUB_URL=Enter GitHub URL: "
-)
+set GITHUB_URL=https://github.com/gucchon001/ebis_bq.git
 
-echo [INFO] Initializing Git repository...
+echo Initializing Git repository...
 git init
 
-echo [INFO] Setting remote origin to %GITHUB_URL%...
+echo Setting remote origin...
 git remote add origin %GITHUB_URL%
+if errorlevel 1 (
+    echo Remote origin already exists, updating URL...
+    git remote set-url origin %GITHUB_URL%
+)
 
-echo [INFO] Adding all files...
+echo Adding files...
 git add .
 
-echo [INFO] Creating initial commit...
+echo Creating initial commit...
 git commit -m "Initial commit"
 
-echo [INFO] Pushing to main branch...
-git push -u origin main
+echo Pushing to master branch...
+git push -u origin master
 
-echo [DONE] Repository initialized and committed to %GITHUB_URL%
+echo Done!
 pause
 endlocal 
