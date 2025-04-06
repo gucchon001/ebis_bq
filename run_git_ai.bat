@@ -183,83 +183,83 @@ if "%~1"=="--github-url" (
     goto parse_args
 )
 
-echo 警告: 不明なオプション "%~1" は無視されます
+echo Warning: Unknown option "%~1" will be ignored
 shift
 goto parse_args
 
 :setup_environment
 rem ヘルプ表示
 if "%COMMAND%"=="--help" (
-    echo ===== OpenAI APIを利用したGit操作ツール =====
-    echo 使用方法:
-    echo   run_git_ai.bat [コマンド] [オプション]
+    echo ===== Git Operations Tool with OpenAI API =====
+    echo Usage:
+    echo   run_git_ai.bat [command] [options]
     echo.
-    echo コマンド:
-    echo   ai-commit             : 変更内容からコミットメッセージを自動生成してコミット
-    echo   analyze-pr            : プルリクエストを分析して要約
-    echo   analyze-code          : 指定されたファイルのコード品質を分析
-    echo   suggest-implementation: 新機能の実装案を提案
-    echo   status                : 全リポジトリの状態を表示
-    echo   pull                  : 全リポジトリのpullを実行
-    echo   push                  : 全リポジトリのpushを実行
-    echo   commit                : 全リポジトリの変更をコミット
-    echo   checkout              : 全リポジトリで指定ブランチにチェックアウト
-    echo   reset                 : 全リポジトリの変更をリセット
-    echo   clean                 : 全リポジトリの追跡されていないファイルを削除
-    echo   check-sensitive-info  : 機密情報のチェック (プッシュ前にAPIキーなどをチェック)
-    echo   force-pull            : リモートの最新状態に強制的に合わせる
-    echo   full-push             : 変更をadd、commit、pushまで一気に実行
-    echo   ai-full-push          : 変更をadd、AI生成メッセージでcommit、pushまで一気に実行
-    echo   git-init              : リポジトリ初期化、GitHub URL設定、機密情報チェック、初期コミットまで実行
+    echo Commands:
+    echo   ai-commit             : Generate commit message from changes and commit
+    echo   analyze-pr            : Analyze and summarize a pull request
+    echo   analyze-code          : Analyze code quality of specified file
+    echo   suggest-implementation: Suggest implementation for a new feature
+    echo   status                : Show status of all repositories
+    echo   pull                  : Execute pull on all repositories
+    echo   push                  : Execute push on all repositories
+    echo   commit                : Commit changes in all repositories
+    echo   checkout              : Checkout specified branch in all repositories
+    echo   reset                 : Reset changes in all repositories
+    echo   clean                 : Remove untracked files in all repositories
+    echo   check-sensitive-info  : Check for sensitive information before pushing
+    echo   force-pull            : Force update to match remote state
+    echo   full-push             : Execute add, commit, and push in one go
+    echo   ai-full-push          : Execute add, commit with AI-generated message, and push
+    echo   git-init              : Initialize repository, set GitHub URL, check sensitive info, initial commit
     echo.
-    echo オプション:
-    echo   --repo ^<dir^>         : Gitリポジトリのパスを指定 (デフォルト: カレントディレクトリ)
-    echo   --branch ^<name^>      : ブランチ名を指定 (checkout, pullコマンド用)
-    echo   --message ^<msg^>      : コミットメッセージを指定
-    echo   --pr-url ^<url^>       : 分析するプルリクエストのURL
-    echo   --file ^<path^>        : 分析対象のファイルパス
-    echo   --feature ^<desc^>     : 実装する機能の説明
-    echo   --target-file ^<file^> : 機能を実装するターゲットファイル名
-    echo   --recursive           : サブディレクトリも再帰的に検索 (デフォルト: 無効)
-    echo   --depth ^<num^>        : 再帰検索時の最大深度 (デフォルト: 2)
-    echo   --github-url ^<url^>   : GitHubリポジトリのURL (git-initコマンド用)
-    echo   --help                : このヘルプメッセージを表示
+    echo Options:
+    echo   --repo ^<dir^>         : Specify Git repository path (default: current directory)
+    echo   --branch ^<name^>      : Specify branch name (for checkout, pull commands)
+    echo   --message ^<msg^>      : Specify commit message
+    echo   --pr-url ^<url^>       : URL of the pull request to analyze
+    echo   --file ^<path^>        : File path to analyze
+    echo   --feature ^<desc^>     : Description of feature to implement
+    echo   --target-file ^<file^> : Target file name to implement feature
+    echo   --recursive           : Search subdirectories recursively (default: disabled)
+    echo   --depth ^<num^>        : Maximum depth for recursive search (default: 2)
+    echo   --github-url ^<url^>   : GitHub repository URL (for git-init command)
+    echo   --help                : Display this help message
     echo.
-    echo 例:
+    echo Examples:
     echo   run_git_ai.bat ai-commit
     echo   run_git_ai.bat analyze-pr --pr-url https://github.com/user/repo/pull/123
     echo   run_git_ai.bat analyze-code --file src/main.py
-    echo   run_git_ai.bat suggest-implementation --feature "GitHubのIssueを自動で要約する機能"
+    echo   run_git_ai.bat suggest-implementation --feature "Implement GitHub Issue summarization"
     echo   run_git_ai.bat pull --branch main --recursive
-    echo   run_git_ai.bat commit --message "変更コミット"
+    echo   run_git_ai.bat commit --message "Update commit"
     echo   run_git_ai.bat git-init --github-url https://github.com/username/repo.git
     goto END
 )
 
 rem コマンドが指定されていない場合はメニューを表示
 if "%COMMAND%"=="" (
-    echo 実行するGitコマンドを選択してください:
-    echo   [AI強化コマンド]
-    echo   1. AI自動コミット ^(コミットメッセージを自動生成^)
-    echo   2. プルリクエスト分析
-    echo   3. コード品質分析
-    echo   4. 新機能の実装提案
-    echo   5. AI全処理プッシュ ^(変更のadd、AI生成メッセージでcommit、push^)
-    echo   [標準Gitコマンド]
-    echo   6. リポジトリのステータス確認
-    echo   7. 全リポジトリをプル
-    echo   8. 全リポジトリをプッシュ
-    echo   9. 全リポジトリの変更をコミット
-    echo   10. 全リポジトリのブランチを切り替え
-    echo   11. 全リポジトリの変更をリセット
-    echo   12. 全リポジトリの追跡されていないファイルを削除
-    echo   [セキュリティ/高度な操作]
-    echo   13. 機密情報のチェック ^(プッシュ前にAPIキーなどをチェック^)
-    echo   14. リモートの最新状態に強制的に合わせる ^(force-pull^)
-    echo   15. 変更をadd、commit、pushまで一気に実行 ^(full-push^)
-    echo   16. リポジトリ初期化と初期コミット ^(git-init^)
+    echo Select Git command to execute:
+    echo   [AI-Enhanced Commands]
+    echo   1. AI Auto Commit ^(automatically generate commit message^)
+    echo   2. Pull Request Analysis
+    echo   3. Code Quality Analysis
+    echo   4. New Feature Implementation Suggestion
+    echo   5. AI Full Push ^(add changes, commit with AI message, push^)
+    echo   [Standard Git Commands]
+    echo   6. Repository Status Check
+    echo   7. Pull All Repositories
+    echo   8. Push All Repositories
+    echo   9. Commit Changes in All Repositories
+    echo   10. Switch Branch in All Repositories
+    echo   11. Reset Changes in All Repositories
+    echo   12. Remove Untracked Files in All Repositories
+    echo   [Security/Advanced Operations]
+    echo   13. Check Sensitive Information ^(check API keys before pushing^)
+    echo   14. Force Pull to Match Remote State
+    echo   15. Full Push ^(add, commit, push in one operation^)
+    echo   16. Repository Initialization and Initial Commit
     
-    set /p "MENU_CHOICE=選択肢を入力してください (1-16): "
+    set /p "MENU_CHOICE=Enter your choice (1-16): "
     
     if "%MENU_CHOICE%"=="1" set "COMMAND=ai-commit"
     if "%MENU_CHOICE%"=="2" set "COMMAND=analyze-pr"
@@ -279,7 +279,7 @@ if "%COMMAND%"=="" (
     if "%MENU_CHOICE%"=="16" set "COMMAND=git-init"
     
     if not defined COMMAND (
-        echo エラー: 無効な選択肢です。1-16の数字を入力してください。
+        echo Error: Invalid choice. Please enter a number from 1-16.
         pause
         exit /b 1
     )
@@ -287,174 +287,174 @@ if "%COMMAND%"=="" (
 
 rem 必要なパラメータの追加入力を促す
 if "%COMMAND%"=="analyze-pr" if "%PR_URL%"=="" (
-    set /p "PR_URL=分析するPR URLを入力してください: "
+    set /p "PR_URL=Enter PR URL to analyze: "
     if "!PR_URL!"=="" (
-        echo エラー: PR URLは必須です。
+        echo Error: PR URL is required.
         exit /b 1
     )
 )
 
 if "%COMMAND%"=="analyze-code" if "%FILE_PATH%"=="" (
-    set /p "FILE_PATH=分析するファイルパスを入力してください: "
+    set /p "FILE_PATH=Enter file path to analyze: "
     if "!FILE_PATH!"=="" (
-        echo エラー: ファイルパスは必須です。
+        echo Error: File path is required.
         exit /b 1
     )
 )
 
 if "%COMMAND%"=="suggest-implementation" if "%FEATURE%"=="" (
-    set /p "FEATURE=実装する機能を説明してください: "
+    set /p "FEATURE=Describe the feature to implement: "
     if "!FEATURE!"=="" (
-        echo エラー: 機能の説明は必須です。
+        echo Error: Feature description is required.
         exit /b 1
     )
 )
 
 if "%COMMAND%"=="commit" if "%COMMIT_MESSAGE%"=="" (
-    set /p "COMMIT_MESSAGE=コミットメッセージを入力してください: "
+    set /p "COMMIT_MESSAGE=Enter commit message: "
     if "!COMMIT_MESSAGE!"=="" (
-        echo エラー: コミットメッセージは必須です。
+        echo Error: Commit message is required.
         exit /b 1
     )
 )
 
 if "%COMMAND%"=="checkout" if "%BRANCH%"=="" (
-    set /p "BRANCH=切り替え先のブランチ名を入力してください: "
+    set /p "BRANCH=Enter branch name to checkout: "
     if "!BRANCH!"=="" (
-        echo エラー: ブランチ名は必須です。
+        echo Error: Branch name is required.
         exit /b 1
     )
 )
 
 if "%COMMAND%"=="git-init" if "%GITHUB_URL%"=="" (
-    set /p "GITHUB_URL=GitHub リポジトリURLを入力してください (例: https://github.com/username/repo.git): "
+    set /p "GITHUB_URL=Enter GitHub repository URL (e.g., https://github.com/username/repo.git): "
     if "!GITHUB_URL!"=="" (
-        echo エラー: GitHub URLは必須です。
+        echo Error: GitHub URL is required.
         goto END
     )
 )
 
 rem 再帰検索の確認
 if not defined USE_RECURSIVE (
-    set /p "RECURSIVE_CHOICE=サブディレクトリも再帰的に検索しますか？ (Y/N): "
+    set /p "RECURSIVE_CHOICE=Search subdirectories recursively? (Y/N): "
     if /i "!RECURSIVE_CHOICE!"=="Y" set "USE_RECURSIVE=--recursive"
 )
 
 rem Pythonが利用可能か確認
 %PYTHON_CMD% --version >nul 2>&1
 if errorlevel 1 (
-    echo エラー: Python がインストールされていないか、環境パスが設定されていません。
+    echo Error: Python is not installed or not in PATH.
     pause
     exit /b 1
 )
 
 rem 仮想環境の存在確認と有効化
 if exist "%VENV_PATH%\Scripts\activate.bat" (
-    echo [INFO] 仮想環境をアクティブ化しています...
+    echo [INFO] Activating virtual environment...
     call "%VENV_PATH%\Scripts\activate.bat"
 ) else (
-    echo [INFO] 仮想環境が見つかりません。システムのPythonを使用します。
+    echo [INFO] Virtual environment not found. Using system Python.
 )
 
 rem git-initコマンドの処理（特別なケース）
 if "%COMMAND%"=="git-init" (
-    echo [処理] リポジトリの初期化と設定を行います...
+    echo [PROCESS] Initializing and configuring repository...
     
-    echo Gitリポジトリを初期化しています...
+    echo Initializing Git repository...
     git -c credential.helper="" -c core.editor=notepad -c core.autocrlf=true init
     if !ERRORLEVEL! neq 0 (
-        echo エラー: リポジトリの初期化に失敗しました。
+        echo Error: Failed to initialize repository.
         goto END
     )
     
-    echo リモートリポジトリを設定しています: !GITHUB_URL!
+    echo Setting remote repository: !GITHUB_URL!
     git -c credential.helper="" remote add origin !GITHUB_URL!
     if !ERRORLEVEL! neq 0 (
-        echo エラー: リモートリポジトリの設定に失敗しました。
+        echo Error: Failed to set remote repository.
         goto END
     )
     
-    echo 初期コミットを実行しています...
+    echo Creating initial commit...
     git add .
     git -c credential.helper="" commit -m "Initial commit"
     if !ERRORLEVEL! neq 0 (
-        echo エラー: コミットに失敗しました。
+        echo Error: Failed to commit.
         goto END
     )
     
-    echo プッシュを実行しています...
+    echo Pushing to remote...
     git -c credential.helper="" push -u origin main
     if !ERRORLEVEL! neq 0 (
-        echo エラー: プッシュに失敗しました。
+        echo Error: Failed to push.
         goto END
     )
     
-    echo リポジトリの初期化と初期コミットが完了しました。
-    echo リモートリポジトリURL: !GITHUB_URL!
+    echo Repository initialization and initial commit completed.
+    echo Remote repository URL: !GITHUB_URL!
     goto END
 )
 
 rem 必要なスクリプトの存在確認
 if "%COMMAND%"=="ai-commit" (
     if not exist "%OPENAI_SCRIPT_PATH%" (
-        echo エラー: OpenAI Git操作スクリプトが見つかりません: %OPENAI_SCRIPT_PATH%
+        echo Error: OpenAI Git helper script not found: %OPENAI_SCRIPT_PATH%
         goto END
     )
 ) else if "%COMMAND%"=="analyze-pr" (
     if not exist "%OPENAI_SCRIPT_PATH%" (
-        echo エラー: OpenAI Git操作スクリプトが見つかりません: %OPENAI_SCRIPT_PATH%
+        echo Error: OpenAI Git helper script not found: %OPENAI_SCRIPT_PATH%
         goto END
     )
 ) else if "%COMMAND%"=="analyze-code" (
     if not exist "%OPENAI_SCRIPT_PATH%" (
-        echo エラー: OpenAI Git操作スクリプトが見つかりません: %OPENAI_SCRIPT_PATH%
+        echo Error: OpenAI Git helper script not found: %OPENAI_SCRIPT_PATH%
         goto END
     )
 ) else if "%COMMAND%"=="suggest-implementation" (
     if not exist "%OPENAI_SCRIPT_PATH%" (
-        echo エラー: OpenAI Git操作スクリプトが見つかりません: %OPENAI_SCRIPT_PATH%
+        echo Error: OpenAI Git helper script not found: %OPENAI_SCRIPT_PATH%
         goto END
     )
 ) else (
     if not exist "%GIT_BATCH_SCRIPT%" (
-        echo エラー: Git一括処理スクリプトが見つかりません: %GIT_BATCH_SCRIPT%
+        echo Error: Git batch processing script not found: %GIT_BATCH_SCRIPT%
         goto END
     )
 )
 
 rem コマンドの構築と実行
 if "%COMMAND%"=="ai-commit" (
-    echo AI支援コミットを実行中...
+    echo Executing AI-assisted commit...
     %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" ai-commit --repo "%REPO_PATH%"
     if !ERRORLEVEL! neq 0 (
-        echo エラー: AI支援コミットの実行中にエラーが発生しました。
+        echo Error: An error occurred during AI-assisted commit execution.
         set /a ERROR_COUNT+=1
     )
 )
 
 if "%COMMAND%"=="analyze-pr" (
     if not defined PR_URL (
-        set /p "PR_URL=分析するプルリクエストのURLを入力してください: "
+        set /p "PR_URL=Enter pull request URL to analyze: "
     )
-    echo [処理] プルリクエスト %PR_URL% を分析します...
+    echo [PROCESS] Analyzing pull request %PR_URL%...
     %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" analyze-pr --repo "%REPO_PATH%" --pr-url "%PR_URL%"
     goto END
 )
 
 if "%COMMAND%"=="analyze-code" (
     if not defined FILE_PATH (
-        set /p "FILE_PATH=分析するファイルパスを入力してください: "
+        set /p "FILE_PATH=Enter file path to analyze: "
     )
-    echo [処理] ファイル %FILE_PATH% を分析します...
+    echo [PROCESS] Analyzing file %FILE_PATH%...
     %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" analyze-code --repo "%REPO_PATH%" --file "%FILE_PATH%"
     goto END
 )
 
 if "%COMMAND%"=="suggest-implementation" (
     if not defined FEATURE (
-        set /p "FEATURE=実装する機能を説明してください: "
+        set /p "FEATURE=Describe the feature to implement: "
     )
-    echo [処理] 機能 "%FEATURE%" の実装案を提案します...
+    echo [PROCESS] Suggesting implementation for "%FEATURE%"...
     if defined TARGET_FILE (
         %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" suggest-implementation --repo "%REPO_PATH%" --feature "%FEATURE%" --target-file "%TARGET_FILE%"
     ) else (
@@ -464,11 +464,11 @@ if "%COMMAND%"=="suggest-implementation" (
 )
 
 if "%COMMAND%"=="check-sensitive-info" (
-    echo [処理] プッシュ前の機密情報チェックを実行します...
+    echo [PROCESS] Checking for sensitive information before pushing...
     %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" check-sensitive-info --repo "%REPO_PATH%"
     
     if errorlevel 1 (
-        echo [警告] 機密情報が検出されました。プッシュする前に確認してください。
+        echo [WARNING] Sensitive information detected. Please review before pushing.
         pause
     )
     
@@ -476,26 +476,26 @@ if "%COMMAND%"=="check-sensitive-info" (
 )
 
 if "%COMMAND%"=="force-pull" (
-    echo [処理] リモートの最新状態に強制的に合わせます...
+    echo [PROCESS] Forcing update to match remote state...
     %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" force-pull --repo "%REPO_PATH%"
     goto END
 )
 
 if "%COMMAND%"=="full-push" (
-    echo [処理] 変更をadd、commit、pushまで一気に実行します...
+    echo [PROCESS] Executing add, commit, and push in one go...
     %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" full-push --repo "%REPO_PATH%"
     goto END
 )
 
 if "%COMMAND%"=="ai-full-push" (
-    echo AI支援全処理プッシュを実行中...
+    echo Executing AI-assisted full push...
     if defined BRANCH (
         %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" ai-full-push --repo "%REPO_PATH%" --branch "%BRANCH%"
     ) else (
         %PYTHON_CMD% "%OPENAI_SCRIPT_PATH%" ai-full-push --repo "%REPO_PATH%"
     )
     if !ERRORLEVEL! neq 0 (
-        echo エラー: AI支援全処理プッシュの実行中にエラーが発生しました。
+        echo Error: An error occurred during AI-assisted full push execution.
         set /a ERROR_COUNT+=1
     )
 )
@@ -513,26 +513,26 @@ if not "%COMMIT_MESSAGE%"=="" (
 
 echo.
 echo ===========================================================
-echo Git操作ツール - コマンド: %COMMAND%
-echo 対象リポジトリ: %REPO_PATH%
+echo Git Operations Tool - Command: %COMMAND%
+echo Target repository: %REPO_PATH%
 if not "%PR_URL%"=="" echo PR URL: %PR_URL%
-if not "%FILE_PATH%"=="" echo 対象ファイル: %FILE_PATH%
-if not "%FEATURE%"=="" echo 機能説明: %FEATURE%
-if not "%TARGET_FILE%"=="" echo ターゲットファイル: %TARGET_FILE%
-if not "%BRANCH%"=="" echo ブランチ: %BRANCH%
-if not "%COMMIT_MESSAGE%"=="" echo コミットメッセージ: %COMMIT_MESSAGE%
+if not "%FILE_PATH%"=="" echo Target file: %FILE_PATH%
+if not "%FEATURE%"=="" echo Feature description: %FEATURE%
+if not "%TARGET_FILE%"=="" echo Target file: %TARGET_FILE%
+if not "%BRANCH%"=="" echo Branch: %BRANCH%
+if not "%COMMIT_MESSAGE%"=="" echo Commit message: %COMMIT_MESSAGE%
 if not "%GITHUB_URL%"=="" echo GitHub URL: %GITHUB_URL%
-if "%USE_RECURSIVE%"=="--recursive" echo 再帰検索: 有効 (最大深度: %DEPTH%)
+if "%USE_RECURSIVE%"=="--recursive" echo Recursive search: Enabled (max depth: %DEPTH%)
 echo ===========================================================
 echo.
 
-echo [INFO] Pythonスクリプトを実行しています...
+echo [INFO] Executing Python script...
 %PYTHON_CMD% %PYTHON_ARGS%
 
 if errorlevel 1 (
-    echo [ERROR] 処理中にエラーが発生しました。
+    echo [ERROR] An error occurred during processing.
 ) else (
-    echo [INFO] 処理が正常に完了しました。
+    echo [INFO] Processing completed successfully.
 )
 
 rem 仮想環境の非アクティブ化
