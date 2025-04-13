@@ -1,0 +1,54 @@
+{
+  "test_timestamp": "2025-04-09 08:50:34",
+  "category": "selenium",
+  "test_ebis_login_initialization": {
+    "passed": true,
+    "description": "EbisLoginPageクラスの初期化と設定の読み込み",
+    "execution_timestamp": "2025-04-09 08:49:35",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\ebis_login.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_ebis_login.py",
+    "method": "test_ebis_login_initialization",
+    "execution_time": 1.74,
+    "category": "selenium"
+  },
+  "test_ebis_login_with_valid_credentials": {
+    "passed": false,
+    "description": "有効な認証情報を使用したアドエビスへのログイン機能",
+    "execution_timestamp": "2025-04-09 08:49:43",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\ebis_login.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_ebis_login.py",
+    "method": "test_ebis_login_with_valid_credentials",
+    "execution_time": 4.37,
+    "category": "selenium"
+  },
+  "test_post_login_notice_handling": {
+    "passed": true,
+    "description": "ログイン後の通知やポップアップの処理機能",
+    "execution_timestamp": "2025-04-09 08:50:15",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\ebis_login.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_ebis_login.py",
+    "method": "test_post_login_notice_handling",
+    "execution_time": 31.81,
+    "category": "selenium"
+  },
+  "test_navigate_to_dashboard": {
+    "passed": false,
+    "description": "ダッシュボードページへの移動機能",
+    "execution_timestamp": "2025-04-09 08:50:19",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\ebis_login.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_ebis_login.py",
+    "method": "test_navigate_to_dashboard",
+    "execution_time": 4.2,
+    "category": "selenium"
+  },
+  "test_error_handling_with_invalid_credentials": {
+    "passed": true,
+    "description": "無効な認証情報に対するエラーハンドリング機能",
+    "execution_timestamp": "2025-04-09 08:50:25",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\ebis_login.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_ebis_login.py",
+    "method": "test_error_handling_with_invalid_credentials",
+    "execution_time": 6.36,
+    "category": "selenium"
+  }
+}

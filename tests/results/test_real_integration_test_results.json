@@ -1,0 +1,123 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_find_real_git_repos": {
+    "passed": true,
+    "description": "実際のリポジトリ検索をテスト",
+    "execution_time": 0.012253599998075515,
+    "execution_timestamp": "2025-04-07 22:04:07",
+    "error_log": null
+  },
+  "test_git_status_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリでGitステータスを確認",
+    "execution_time": 0.048210399982053787,
+    "execution_timestamp": "2025-04-07 22:04:08",
+    "error_log": null
+  },
+  "test_git_commit_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリで変更をコミット",
+    "execution_time": 0.2639651999925263,
+    "execution_timestamp": "2025-04-07 22:04:13",
+    "error_log": null
+  },
+  "test_generate_commit_message_with_real_api": {
+    "passed": true,
+    "description": "実際のOpenAI APIを使用してコミットメッセージを生成",
+    "execution_time": 3.1497586000186857,
+    "execution_timestamp": "2025-04-07 22:04:20",
+    "error_log": null
+  },
+  "test_check_sensitive_info_with_real_api": {
+    "passed": true,
+    "description": "実際のOpenAI APIを使用して機密情報チェック",
+    "execution_time": 0.1420903999824077,
+    "execution_timestamp": "2025-04-07 22:04:25",
+    "error_log": null
+  },
+  "test_analyze_code_quality_with_real_api": {
+    "passed": true,
+    "description": "実際のOpenAI APIを使用してコード品質を分析",
+    "execution_time": 4.29205719998572,
+    "execution_timestamp": "2025-04-07 22:04:34",
+    "error_log": null
+  },
+  "test_suggest_feature_implementation_with_real_api": {
+    "passed": true,
+    "description": "実際のOpenAI APIを使用して新機能の実装案を提案",
+    "execution_time": 3.639231799985282,
+    "execution_timestamp": "2025-04-07 22:04:42",
+    "error_log": null
+  },
+  "test_branch_strategy_hint_with_real_api": {
+    "passed": true,
+    "description": "実際のOpenAI APIを使用してブランチ戦略のヒントを生成",
+    "execution_time": 2.667850500001805,
+    "execution_timestamp": "2025-04-07 22:04:49",
+    "error_log": null
+  },
+  "test_ai_git_command_with_real_api": {
+    "passed": true,
+    "description": "実際のOpenAI APIを使用してAIコマンドを実行",
+    "execution_time": 1.1209736000164412,
+    "execution_timestamp": "2025-04-07 22:04:55",
+    "error_log": null
+  },
+  "test_git_pull_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリでプル操作を実行",
+    "execution_time": 0.1417684000043664,
+    "execution_timestamp": "2025-04-07 22:04:59",
+    "error_log": null
+  },
+  "test_git_force_pull_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリで強制プル操作を実行",
+    "execution_time": 0.48137120000319555,
+    "execution_timestamp": "2025-04-07 22:05:04",
+    "error_log": null
+  },
+  "test_git_checkout_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリでブランチ切り替えを実行",
+    "execution_time": 0.30254449998028576,
+    "execution_timestamp": "2025-04-07 22:05:09",
+    "error_log": null
+  },
+  "test_git_reset_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリで変更のリセットを実行",
+    "execution_time": 0.28952320001553744,
+    "execution_timestamp": "2025-04-07 22:05:14",
+    "error_log": null
+  },
+  "test_git_clean_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリで未追跡ファイルのクリーンを実行",
+    "execution_time": 0.12275819998467341,
+    "execution_timestamp": "2025-04-07 22:05:18",
+    "error_log": null
+  },
+  "test_git_push_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリでプッシュ操作を実行",
+    "execution_time": 0.16297440000926144,
+    "execution_timestamp": "2025-04-07 22:05:23",
+    "error_log": null
+  },
+  "test_git_full_push_on_real_repo": {
+    "passed": true,
+    "description": "実際のリポジトリで完全プッシュ操作（add→commit→push）を実行",
+    "execution_time": 0.26525920000858605,
+    "execution_timestamp": "2025-04-07 22:05:28",
+    "error_log": null
+  },
+  "test_analyze_pr_with_real_api": {
+    "passed": true,
+    "description": "実際のOpenAI APIを使用してPRを分析",
+    "execution_time": 4.959719300008146,
+    "execution_timestamp": "2025-04-07 22:05:37",
+    "error_log": null
+  }
+}

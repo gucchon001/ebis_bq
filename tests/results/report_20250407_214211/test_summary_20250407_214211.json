@@ -1,0 +1,65 @@
+{
+  "timestamp": "2025-04-07 21:42:11",
+  "total_tests": 7,
+  "passed_tests": 7,
+  "failed_tests": 0,
+  "pass_rate": 100.0,
+  "results": {
+    "test_basic_page_analysis": {
+      "passed": true,
+      "description": "基本的なページ解析のテスト",
+      "execution_time": 56.641380099987146,
+      "execution_timestamp": "2025-04-07 21:32:10",
+      "error_log": null,
+      "category": "その他"
+    },
+    "test_form_automation": {
+      "passed": true,
+      "description": "フォーム自動操作のテスト",
+      "execution_time": 56.82725670002401,
+      "execution_timestamp": "2025-04-07 21:33:07",
+      "error_log": null,
+      "category": "その他"
+    },
+    "test_search_elements_by_text": {
+      "passed": true,
+      "description": "テキストによる要素検索のテスト",
+      "execution_time": 0.6608311000163667,
+      "execution_timestamp": "2025-04-07 21:33:07",
+      "error_log": null,
+      "category": "その他"
+    },
+    "test_interactive_elements": {
+      "passed": true,
+      "description": "インタラクティブ要素の検出と操作のテスト",
+      "execution_time": 70.92732359998627,
+      "execution_timestamp": "2025-04-07 21:34:18",
+      "error_log": null,
+      "category": "その他"
+    },
+    "test_page_state_detection": {
+      "passed": true,
+      "description": "ページ状態の検出と監視のテスト",
+      "execution_time": 71.08083439999609,
+      "execution_timestamp": "2025-04-07 21:35:29",
+      "error_log": null,
+      "category": "その他"
+    },
+    "test_spa_element_detection": {
+      "passed": true,
+      "description": "単一ページアプリケーション（SPA）での要素検出テスト",
+      "execution_time": 85.39549950000946,
+      "execution_timestamp": "2025-04-07 21:36:55",
+      "error_log": null,
+      "category": "その他"
+    },
+    "test_alert_detection": {
+      "passed": true,
+      "description": "アラート検出のテスト",
+      "execution_time": 0.24401450000004843,
+      "execution_timestamp": "2025-04-07 21:36:55",
+      "error_log": null,
+      "category": "その他"
+    }
+  }
+}

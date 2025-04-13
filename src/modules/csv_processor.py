@@ -76,12 +76,13 @@ class CSVProcessor:
                 directory.mkdir(parents=True, exist_ok=True)
                 logger.info(f"ディレクトリを作成しました: {directory}")
                 
-    def get_csv_path(self, filename: str) -> Path:
+    def get_csv_path(self, filename: str, is_variable: bool = False) -> Path:
         """
         CSVファイルのパスを取得する
         
         Args:
             filename (str): ファイル名
+            is_variable (bool): 可変ファイルかどうか（Trueの場合は可変ファイルディレクトリを使用）
             
         Returns:
             Path: CSVファイルのパス

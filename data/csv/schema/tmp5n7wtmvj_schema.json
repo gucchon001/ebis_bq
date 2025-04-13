@@ -1,0 +1,66 @@
+{
+  "schema": [
+    {
+      "COLUMN_ORIGIN_NAME": "ID",
+      "DATA_TYPE": "BOOLEAN",
+      "COLUMN_AFTER_NAME": "",
+      "DESCRIPTION": "",
+      "SAMPLE_DATA": 1,
+      "CONSISTENCY_RATE": 0.5,
+      "INCONSISTENT_COUNT": 1,
+      "INCONSISTENT_SAMPLES": [
+        2
+      ]
+    },
+    {
+      "COLUMN_ORIGIN_NAME": "Name",
+      "DATA_TYPE": "STR",
+      "COLUMN_AFTER_NAME": "",
+      "DESCRIPTION": "",
+      "SAMPLE_DATA": "Alice",
+      "CONSISTENCY_RATE": 1.0,
+      "INCONSISTENT_COUNT": 0,
+      "INCONSISTENT_SAMPLES": []
+    },
+    {
+      "COLUMN_ORIGIN_NAME": "Age",
+      "DATA_TYPE": "INT",
+      "COLUMN_AFTER_NAME": "",
+      "DESCRIPTION": "",
+      "SAMPLE_DATA": 30,
+      "CONSISTENCY_RATE": 1.0,
+      "INCONSISTENT_COUNT": 0,
+      "INCONSISTENT_SAMPLES": []
+    }
+  ],
+  "consistency_results": [
+    {
+      "column_name": "ID",
+      "data_type": "BOOLEAN",
+      "consistency_rate": 0.5,
+      "inconsistent_count": 1,
+      "inconsistent_values": [
+        2
+      ],
+      "inconsistent_rows": [
+        2
+      ]
+    },
+    {
+      "column_name": "Name",
+      "data_type": "STR",
+      "consistency_rate": 1.0,
+      "inconsistent_count": 0,
+      "inconsistent_values": [],
+      "inconsistent_rows": []
+    },
+    {
+      "column_name": "Age",
+      "data_type": "INT",
+      "consistency_rate": 1.0,
+      "inconsistent_count": 0,
+      "inconsistent_values": [],
+      "inconsistent_rows": []
+    }
+  ]
+}

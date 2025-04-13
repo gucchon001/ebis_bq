@@ -1,0 +1,14 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "selenium",
+  "test_nonexistent_page": {
+    "passed": false,
+    "description": "存在しないページへのアクセス時のエラー処理を検証",
+    "execution_timestamp": "2025-04-07 22:05:48",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\error_handling.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_error_handling.py",
+    "method": "test_nonexistent_page",
+    "execution_time": 0.0,
+    "category": "selenium"
+  }
+}

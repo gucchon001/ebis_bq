@@ -875,60 +875,213 @@ class LoginPage:
     @handle_errors(screenshot_name="login_process_error", raise_exception=True)
     def login(self, url=None, max_attempts=None):
         """
-        ログイン処理の一連の流れを実行する
+        ログイン処理を実行する
         
         Args:
-            url (str, optional): ログインページのURL（省略時は設定から読み込み）
-            max_attempts (int, optional): 最大試行回数（省略時は設定から読み込み）
+            url (str, optional): ログインページのURL（指定がなければ設定値を使用）
+            max_attempts (int, optional): ログイン試行回数（指定がなければ設定値を使用）
             
         Returns:
-            bool: ログイン成功時はTrue
+            bool: ログイン成功時はTrue、失敗時はFalse
+            
+        Raises:
+            LoginError: ログイン処理中にエラーが発生した場合
         """
-        # 最大試行回数の設定
-        attempts = max_attempts or self.max_attempts
+        # 初期化とパラメータの設定
+        success = False
+        attempt = 0
         
-        for attempt in range(1, attempts + 1):
-            try:
-                self.logger.info(f"ログイン処理を開始します（試行 {attempt}/{attempts}）")
+        # デフォルト値の設定
+        if max_attempts is None:
+            max_attempts = int(self._get_config_value("LOGIN", "max_attempts", "3"))
+        
+        # ログイン前の状態を記録
+        self.logger.info(f"ログイン処理を開始します [URL: {url or self.login_url}]")
+        
+        # スクリーンショットの取得 (ログイン前)
+        if hasattr(self.browser, 'save_screenshot'):
+            self.browser.save_screenshot("login_before", append_timestamp=True, append_url=True)
+        
+        # メインのログインフロー
+        try:
+            # 1. ログインページへの移動
+            self.navigate_to_login_page(url)
+            
+            # 2. ページの読み込み完了を待機
+            self.wait_for_page_load()
+            
+            # 3. ログインフォームの認識と待機
+            # ユーザー名またはアカウントキー入力欄を待機
+            username_locator = self.username_input or self.account_key_input
+            if not username_locator:
+                raise LoginError("ユーザー名/アカウントキー入力欄のセレクタが設定されていません")
+            
+            # 入力フォームが表示されるまで待機
+            self.wait_for_element(username_locator, visible=True)
+            
+            # 認証リダイレクトの検出と処理
+            self.detect_and_handle_auth_redirect()
+            
+            # ログイン試行のループ
+            while attempt < max_attempts:
+                attempt += 1
+                self.logger.info(f"ログイン試行 {attempt}/{max_attempts}")
                 
-                # ログインページに移動
-                self.navigate_to_login_page(url)
-                
-                # ログインフォームに情報を入力
+                # 4. フォームの入力
                 self.fill_login_form()
                 
-                # ログインフォームを送信
-                self.submit_login_form()
+                # スクリーンショットの取得 (フォーム入力後、送信前)
+                if hasattr(self.browser, 'save_screenshot'):
+                    self.browser.save_screenshot(f"login_form_filled_{attempt}", append_timestamp=True)
                 
-                # ログイン結果の確認
-                result = self.check_login_result()
+                # 5. フォームの送信
+                submit_success = self.submit_login_form()
+                if not submit_success:
+                    self.logger.warning(f"フォーム送信に失敗しました (試行 {attempt}/{max_attempts})")
+                    continue
                 
-                if result:
+                # 6. ログイン後のリダイレクトを待機
+                redirect_success = self.wait_for_login_redirect()
+                
+                # 7. ログイン結果の検証
+                login_success = self.check_login_result()
+                
+                # ログイン成功の場合
+                if login_success:
                     self.logger.info("ログインに成功しました")
-                    return True
-                else:
-                    self.logger.warning(f"ログインに失敗しました（試行 {attempt}/{attempts}）")
                     
-                    # 最終試行の場合はエラーで終了
-                    if attempt == attempts:
-                        self.logger.error("最大試行回数に達しました")
-                        raise LoginError("最大試行回数に達しました")
+                    # スクリーンショットの取得 (ログイン成功後)
+                    if hasattr(self.browser, 'save_screenshot'):
+                        self.browser.save_screenshot("login_success", append_timestamp=True, append_url=True)
+                    
+                    # ログイン成功後のポップアップなどの処理
+                    self._handle_post_login_notices()
+                    
+                    success = True
+                    break
+                else:
+                    # ログイン失敗の場合
+                    self.logger.warning(f"ログインに失敗しました (試行 {attempt}/{max_attempts})")
+                    
+                    # スクリーンショットの取得 (ログイン失敗)
+                    if hasattr(self.browser, 'save_screenshot'):
+                        self.browser.save_screenshot(f"login_failure_{attempt}", append_timestamp=True, append_url=True)
+                    
+                    # エラーメッセージの取得と分析
+                    error_message = self._extract_login_error_message()
+                    if error_message:
+                        self.logger.warning(f"検出されたエラーメッセージ: {error_message}")
                         
-                    # 次の試行のための待機
-                    time.sleep(3)
-            except Exception as e:
-                self.logger.error(f"ログイン処理中にエラーが発生しました: {str(e)}")
+                        # 認証情報が間違っている場合はすぐに終了
+                        if any(keyword in error_message.lower() for keyword in ["invalid", "incorrect", "wrong", "failed", "失敗", "不正", "誤り"]):
+                            self.logger.error("認証情報が間違っています。再試行を中止します。")
+                            raise LoginError(f"認証失敗: {error_message}")
+                            
+            # 最大試行回数を超えた場合
+            if not success:
+                self.logger.error(f"最大試行回数 ({max_attempts}) に達しました。ログインに失敗しました。")
+                raise LoginError(f"最大試行回数 ({max_attempts}) に達しました")
                 
-                # 最終試行の場合はエラーで終了
-                if attempt == attempts:
-                    self.logger.error("最大試行回数に達しました")
-                    raise LoginError(f"ログイン処理に失敗しました: {str(e)}")
-                
-                # 次の試行のための待機
-                time.sleep(3)
-        
-        return False
+        except LoginError as e:
+            # ログインに関するエラーの処理
+            self.logger.error(f"ログインエラー: {str(e)}")
+            # スクリーンショットの取得 (エラー時)
+            if hasattr(self.browser, 'save_screenshot'):
+                self.browser.save_screenshot("login_error", append_timestamp=True, append_url=True)
+            raise
+            
+        except Exception as e:
+            # その他の一般的なエラーの処理
+            self.logger.error(f"予期しないエラーが発生しました: {str(e)}")
+            self.logger.error(traceback.format_exc())
+            # スクリーンショットの取得 (エラー時)
+            if hasattr(self.browser, 'save_screenshot'):
+                self.browser.save_screenshot("login_unexpected_error", append_timestamp=True, append_url=True)
+            raise LoginError(f"予期しないエラー: {str(e)}")
+            
+        return success
+
+    def _handle_post_login_notices(self):
+        """ログイン成功後のお知らせやポップアップを処理する"""
+        try:
+            # ポップアップ通知の検出と処理
+            if self.popup_notice:
+                try:
+                    # ポップアップが表示されるのを待機（短めの時間）
+                    self.wait_for_element(self.popup_notice, timeout=5, visible=True)
+                    self.logger.info("ログイン後のお知らせポップアップを検出しました")
+                    
+                    # スクリーンショットの取得 (ポップアップ表示時)
+                    if hasattr(self.browser, 'save_screenshot'):
+                        self.browser.save_screenshot("login_popup_notice", append_timestamp=True)
+                    
+                    # ポップアップを閉じる
+                    element = self.browser.wait_for_element(self.popup_notice[0], self.popup_notice[1], timeout=5)
+                    if element:
+                        # JavaScriptでのクリックを優先（より安定している）
+                        try:
+                            self.browser.driver.execute_script("arguments[0].click();", element)
+                            self.logger.info("ポップアップを閉じました (JavaScriptクリック)")
+                        except Exception as e:
+                            self.logger.warning(f"JavaScriptクリックでポップアップを閉じる処理に失敗: {e}")
+                            # 通常のクリックを試行
+                            try:
+                                element.click()
+                                self.logger.info("ポップアップを閉じました (通常クリック)")
+                            except Exception as e2:
+                                self.logger.warning(f"通常クリックでもポップアップを閉じる処理に失敗: {e2}")
+                except Exception as e:
+                    self.logger.info(f"ログイン後のポップアップ処理をスキップします: {e}")
+                    
+            # その他のポストログイン処理があれば追加
+            
+        except Exception as e:
+            self.logger.warning(f"ポストログイン処理中にエラーが発生しました: {e}")
+            # 処理は続行（失敗してもログイン自体は成功している）
     
+    def _extract_login_error_message(self):
+        """ログインエラーメッセージを抽出する"""
+        try:
+            # ページ内のエラーメッセージを検索
+            # 一般的なエラーメッセージセレクタのパターン
+            error_selectors = [
+                (By.CSS_SELECTOR, ".error-message"),
+                (By.CSS_SELECTOR, ".alert-danger"),
+                (By.CSS_SELECTOR, ".login-error"),
+                (By.XPATH, "//div[contains(@class, 'error')]"),
+                (By.XPATH, "//span[contains(@class, 'error')]"),
+                (By.XPATH, "//p[contains(@class, 'error')]"),
+                (By.XPATH, "//div[contains(@class, 'alert')]"),
+                (By.XPATH, "//*[contains(text(), 'エラー')]"),
+                (By.XPATH, "//*[contains(text(), '失敗')]"),
+                (By.XPATH, "//*[contains(text(), 'invalid')]"),
+                (By.XPATH, "//*[contains(text(), 'incorrect')]"),
+                (By.XPATH, "//*[contains(text(), 'failed')]")
+            ]
+            
+            # 各セレクタを試す
+            for selector in error_selectors:
+                try:
+                    elements = self.browser.driver.find_elements(selector[0], selector[1])
+                    if elements:
+                        for element in elements:
+                            if element.is_displayed() and element.text.strip():
+                                return element.text.strip()
+                except Exception:
+                    continue
+            
+            # ページ解析でエラーメッセージを抽出（より詳細なアプローチ）
+            if hasattr(self.browser, 'analyze_page_content'):
+                page_analysis = self.browser.analyze_page_content()
+                if 'error_messages' in page_analysis and page_analysis['error_messages']:
+                    return '; '.join(page_analysis['error_messages'])
+            
+            return None
+            
+        except Exception as e:
+            self.logger.warning(f"エラーメッセージの抽出に失敗しました: {e}")
+            return None
+
     def close(self):
         """
         ブラウザを閉じる（このクラスで作成した場合のみ）

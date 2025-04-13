@@ -39,50 +39,63 @@ class TestSummaryGenerator:
             
         self.results_dir = self.project_root / "tests" / "results"
         
-    def get_test_results(self) -> Optional[Dict[str, Any]]:
+    def get_test_results(self):
         """
-        テスト結果ファイルからデータを収集
+        テスト結果ファイルを読み込んで解析し、結果を返す
         
         Returns:
-            Optional[Dict[str, Any]]: テスト結果の辞書、失敗時はNone
+            Dict[str, Any]: テスト結果の辞書（キー: テスト名、値: テスト結果）
         """
-        # 結果ディレクトリが存在しない場合
-        if not self.results_dir.exists():
-            logger.error(f"テスト結果ディレクトリ {self.results_dir} が見つかりません")
-            return None
-            
-        # JSONファイルを探す
-        result_files = list(self.results_dir.glob("*.json"))
+        results_dir = self.project_root / "tests" / "results"
         
-        if not result_files:
-            logger.error(f"{self.results_dir} にテスト結果ファイルが見つかりません")
-            return None
-            
-        # すべての結果を集約
-        all_results = {}
-        file_count = 0
+        # 結果ディレクトリが存在しない場合は空の辞書を返す
+        if not results_dir.exists():
+            logger.warning(f"結果ディレクトリが存在しません: {results_dir}")
+            return {}
         
-        for result_file in result_files:
+        # test_*_results.json パターンのファイルを検索
+        result_pattern1 = "test_*_results.json"
+        result_pattern2 = "*_test_results.json"
+        result_pattern3 = "test_results_*.json"
+        
+        test_results = {}
+        total_files = 0
+        
+        # パターン1: test_*_results.json（新しい命名規則）
+        for result_file in results_dir.glob(result_pattern1):
+            # レポートフォルダ内のファイルは除外
+            if "report_" in str(result_file.parent.name):
+                continue
+                
             try:
+                logger.debug(f"テスト結果ファイルを読み込み中: {result_file}")
+                
                 with open(result_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    file_count += 1
-                    
-                    # データをマージ
-                    for test_name, result in data.items():
-                        # ファイル名をキーに追加
-                        test_key = f"{result_file.stem}::{test_name}"
-                        all_results[test_key] = result
+                
+                # 結果を統合
+                if "results" in data and isinstance(data["results"], dict):
+                    # 新しい形式: results フィールドに全テスト結果が格納されている
+                    for test_name, test_data in data["results"].items():
+                        # カテゴリとパス情報を追加
+                        if isinstance(test_data, dict):
+                            if "category" not in test_data:
+                                test_data["category"] = data.get("category", "その他")
+                            if "source_file" not in test_data:
+                                test_data["source_file"] = data.get("test_file", "不明").replace("tests/test_file/", "src/").replace("test_", "")
+                            if "method" not in test_data:
+                                test_data["method"] = test_name
+                        test_results[test_name] = test_data
+                
+                total_files += 1
                         
             except Exception as e:
-                logger.warning(f"{result_file} の読み込みに失敗しました: {e}")
-                
-        if file_count == 0:
-            logger.error("有効なテスト結果ファイルが見つかりませんでした")
-            return None
-            
-        logger.info(f"{file_count}個のテスト結果ファイルから{len(all_results)}個のテスト結果を読み込みました")
-        return all_results
+                logger.error(f"テスト結果ファイルの読み込みに失敗しました: {result_file} - {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+        
+        logger.info(f"{total_files}個のテスト結果ファイルから{len(test_results)}個のテスト結果を読み込みました")
+        return test_results
     
     def get_summary_stats(self, results: Dict[str, Any]) -> Tuple[int, int, int, float]:
         """
@@ -97,10 +110,24 @@ class TestSummaryGenerator:
         if not results:
             return (0, 0, 0, 0.0)
             
-        passed_count = sum(1 for data in results.values() if data.get("passed", False))
+        passed_count = 0
         total = len(results)
-        failed_count = total - passed_count
         
+        for test_key, data in results.items():
+            if isinstance(data, dict):
+                if data.get("passed", False):
+                    passed_count += 1
+            elif isinstance(data, bool):
+                # Booleanの場合は直接判定
+                if data:
+                    passed_count += 1
+            elif isinstance(data, (int, float)):
+                # 数値の場合は0以外をPASSとして扱う
+                if data:
+                    passed_count += 1
+            # その他の型は失敗として扱う
+        
+        failed_count = total - passed_count
         pass_rate = (passed_count / total) * 100 if total > 0 else 0.0
         
         return (total, passed_count, failed_count, pass_rate)
@@ -134,7 +161,21 @@ class TestSummaryGenerator:
         failed_count = 0
         
         for test_key, data in sorted(results.items()):
-            status = "PASS" if data.get("passed", False) else "FAIL"
+            # データが辞書でない場合の対応
+            if not isinstance(data, dict):
+                logger.warning(f"テスト結果が不正な形式です: {test_key} => {data}")
+                if isinstance(data, bool):
+                    status = "PASS" if data else "FAIL"
+                    description = "No description available"
+                elif isinstance(data, (int, float)):
+                    status = "PASS" if data else "FAIL"
+                    description = "No description available"
+                else:
+                    status = "ERROR"
+                    description = f"Invalid data type: {type(data)}"
+            else:
+                status = "PASS" if data.get("passed", False) else "FAIL"
+                description = data.get("description", "No description")
             
             # テスト名を整形（ファイル名とテスト名を分離）
             parts = test_key.split("::")
@@ -151,10 +192,9 @@ class TestSummaryGenerator:
             if len(display_name) > 57:
                 display_name = display_name[:54] + "..."
                 
-            description = data.get("description", "No description")
             print(f"{display_name:<60}{status:<10}{description}")
             
-            if data.get("passed", False):
+            if status == "PASS":
                 passed_count += 1
             else:
                 failed_count += 1
@@ -191,9 +231,9 @@ class TestSummaryGenerator:
             # 自動生成
             date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
             if format.lower() == "json":
-                output_path = self.project_root / "tests" / "results" / f"summary_{date_str}.json"
+                output_path = self.project_root / "tests" / "results" / f"test_summary_{date_str}.json"
             else:
-                output_path = self.project_root / "tests" / "results" / f"summary_{date_str}.txt"
+                output_path = self.project_root / "tests" / "results" / f"テスト結果サマリー_{date_str}.txt"
         
         try:
             # 出力ディレクトリの確認
@@ -222,14 +262,27 @@ class TestSummaryGenerator:
                 
                 with open(output_path, "w", encoding="utf-8") as f:
                     f.write("=" * 80 + "\n")
-                    f.write(" " * 25 + "TEST RESULT SUMMARY (" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ")\n")
+                    f.write(" " * 25 + "テスト実行結果サマリー (" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ")\n")
                     f.write("=" * 80 + "\n\n")
                     
                     f.write(f"{'TEST NAME':<60}{'RESULT':<10}{'FUNCTIONALITY ASSURED'}\n")
-                    f.write("-" * 80 + "\n")
+                    f.write("-" * 100 + "\n")
                     
                     for test_key, data in sorted(results.items()):
-                        status = "PASS" if data.get("passed", False) else "FAIL"
+                        # データの型に応じた処理
+                        if isinstance(data, dict):
+                            status = "PASS" if data.get("passed", False) else "FAIL"
+                            description = data.get("description", "No description")
+                        elif isinstance(data, bool):
+                            status = "PASS" if data else "FAIL"
+                            description = "No description available"
+                        elif isinstance(data, (int, float)):
+                            status = "PASS" if data else "FAIL"
+                            description = "No description available"
+                        else:
+                            status = "ERROR"
+                            description = f"Invalid data type: {type(data)}"
+                            
                         parts = test_key.split("::")
                         test_name = parts[-1]
                         
@@ -242,10 +295,9 @@ class TestSummaryGenerator:
                         if len(display_name) > 57:
                             display_name = display_name[:54] + "..."
                             
-                        description = data.get("description", "No description")
                         f.write(f"{display_name:<60}{status:<10}{description}\n")
                     
-                    f.write("-" * 80 + "\n")
+                    f.write("-" * 100 + "\n")
                     f.write(f"Total: {stats[0]} tests ({stats[1]} passed / {stats[2]} failed)\n")
                     f.write(f"Success rate: {stats[3]:.1f}%\n")
                     f.write("=" * 80 + "\n")
@@ -255,76 +307,35 @@ class TestSummaryGenerator:
                 
         except Exception as e:
             logger.error(f"テスト結果の保存に失敗しました: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
             return None
             
     def detailed_summary(self, results: Optional[Dict[str, Any]] = None, output_path: Optional[Path] = None) -> Optional[Path]:
         """
-        テスト結果の詳細サマリーを生成し、対応ファイル、メソッド、機能を含める
+        詳細なテスト結果サマリーを生成する
         
         Args:
-            results (Optional[Dict[str, Any]]): テスト結果の辞書。指定しない場合は取得
-            output_path (Optional[Path]): 出力ファイルパス。指定しない場合は自動生成
+            results (Optional[Dict[str, Any]], optional): テスト結果の辞書
+            output_path (Optional[Path], optional): 出力先のパス
             
         Returns:
-            Optional[Path]: 出力ファイルパス、失敗時はNone
+            Optional[Path]: 生成されたファイルのパス
         """
         if results is None:
             results = self.get_test_results()
             
         if not results:
+            logger.warning("テスト結果が見つかりません")
             return None
-            
-        # テスト対応ファイルとメソッドのマッピング（実際のプロジェクトでは動的に生成する）
-        test_file_method_map = {
-            # アクセステスト系
-            "プロジェクト構造確認": {"file": "src/utils/environment.py", "method": "get_project_root()", "function": "基本ディレクトリ構造が適切で、アプリケーションが正しく実行できる環境が整っている"},
-            "モジュール構造確認": {"file": "src/modules/*", "method": "各種モジュール検証", "function": "ビジネスロジックモジュールの構造が維持され、機能拡張時の整合性が担保されている"},
-            "ユーティリティ確認": {"file": "src/utils/*", "method": "各種ユーティリティ関数", "function": "共通ユーティリティが適切に構成され、環境管理とロギング機能が利用可能な状態にある"},
-            "ログディレクトリ確認": {"file": "src/utils/logging_config.py", "method": "get_logger()", "function": "ログ出力先が確保され、アプリケーションの動作ログが適切に記録できる"},
-            "設定ファイル確認": {"file": "src/utils/environment.py", "method": "get_config_value()", "function": "環境変数と設定ファイルが正しく配置され、アプリケーションが設定を適切に読み込める"},
-            
-            # Seleniumログインテスト系
-            "test_browser_selectors_initialization": {"file": "src/modules/selenium/browser.py", "method": "_load_selectors()", "function": "セレクタCSVファイルが正しく読み込まれ、ログイン用セレクタが適切に初期化される"},
-            "test_httpbin_form_submission": {"file": "src/modules/selenium/browser.py", "method": "navigate_to(), find_element()", "function": "外部サイトへのフォーム送信とレスポンス検証が正常に行える"},
-            "test_dummy_login_page": {"file": "src/modules/selenium/browser.py", "method": "execute_script(), analyze_page_content()", "function": "JavaScriptでのログインフォーム操作とアラート処理が適切に実行できる"},
-            
-            # ログインページ解析テスト系
-            "test_login_form_detection": {"file": "src/modules/selenium/browser.py", "method": "analyze_page_content()", "function": "ログインフォームを自動的に検出し、入力フィールドやボタンを識別できる"},
-            "test_login_failure_detection": {"file": "src/modules/selenium/browser.py", "method": "analyze_page_content(), find_element_by_text()", "function": "ログイン失敗時のエラーメッセージを適切に検出できる"},
-            "test_login_security_features": {"file": "src/modules/selenium/browser.py", "method": "get_page_source()", "function": "HTTPS、CSRF対策、二要素認証などのセキュリティ機能の有無を検出できる"},
-            "test_login_page_performance": {"file": "src/modules/selenium/browser.py", "method": "_get_page_status()", "function": "ページロード時間の計測とパフォーマンス検証が適切に行える"},
-            "test_login_success_workflow": {"file": "src/modules/selenium/browser.py", "method": "wait_for_page_load(), find_element_by_text()", "function": "ログイン成功後の画面遷移と成功メッセージを正しく検証できる"},
-            
-            # ページ解析テスト系
-            "test_basic_page_analysis": {"file": "src/modules/selenium/browser.py", "method": "analyze_page_content(), _get_page_status()", "function": "基本的なページ構造解析機能を検証"},
-            "test_form_automation": {"file": "src/modules/selenium/browser.py", "method": "find_element(), wait_for_element()", "function": "フォームの自動入力と送信機能を検証"},
-            "test_search_elements_by_text": {"file": "src/modules/selenium/browser.py", "method": "find_element_by_text()", "function": "テキスト内容による要素検索機能を検証"},
-            "test_interactive_elements": {"file": "src/modules/selenium/browser.py", "method": "find_interactive_elements()", "function": "インタラクティブ要素の識別機能を検証"},
-            "test_page_state_detection": {"file": "src/modules/selenium/browser.py", "method": "detect_page_changes()", "function": "ページの状態検出機能を検証"},
-            
-            # Google Cloud認証テスト系
-            "test_dataset_exists": {"file": "src/utils/bigquery.py", "method": "dataset_exists()", "function": "BigQueryのデータセットが存在するか確認する"},
-            "test_table_exists": {"file": "src/utils/bigquery.py", "method": "table_exists()", "function": "BigQueryのテーブルが存在するか確認する"},
-            "test_get_table_schema": {"file": "src/utils/bigquery.py", "method": "get_table_schema()", "function": "BigQueryのテーブルスキーマを取得できるか確認する"},
-            "test_credentials_loading": {"file": "src/utils/bigquery.py", "method": "get_credentials()", "function": "サービスアカウント認証情報が適切に読み込めるか確認する"},
-            "test_query_execution": {"file": "src/utils/bigquery.py", "method": "run_query()", "function": "基本的なSQLクエリが実行できるか確認する"},
-            
-            # エラー処理テスト系
-            "test_nonexistent_page": {"file": "src/modules/selenium/browser.py", "method": "navigate_to(), handle_error()", "function": "存在しないページへのアクセス時のエラー処理を検証"},
-            "test_invalid_protocol": {"file": "src/modules/selenium/browser.py", "method": "navigate_to(), handle_error()", "function": "無効なプロトコルのURLへのアクセス時のエラー処理を検証"},
-            "test_page_with_errors": {"file": "src/modules/selenium/browser.py", "method": "analyze_page_content(), handle_error()", "function": "エラーが含まれるページの処理を検証"},
-            "test_redirect_handling": {"file": "src/modules/selenium/browser.py", "method": "navigate_to(), detect_redirects()", "function": "リダイレクトの適切な処理を検証"},
-            "test_slow_loading_page": {"file": "src/modules/selenium/browser.py", "method": "wait_for_page_load()", "function": "遅いページ読み込みの適切な処理を検証"},
-            "test_alert_and_confirm_dialogs": {"file": "src/modules/selenium/browser.py", "method": "_check_alerts(), handle_dialog()", "function": "アラートと確認ダイアログの適切な処理を検証"}
-        }
-        
-        if output_path is None:
-            # 自動生成
-            date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_path = self.project_root / "tests" / "results" / f"detailed_summary_{date_str}.txt"
         
         try:
-            # 出力ディレクトリの確認
+            # 出力パスの設定
+            if output_path is None:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_path = self.project_root / "tests" / "results" / f"detailed_results_{timestamp}.txt"
+            
+            # 結果ディレクトリが存在しない場合は作成
             output_dir = output_path.parent
             if not output_dir.exists():
                 output_dir.mkdir(parents=True)
@@ -332,231 +343,315 @@ class TestSummaryGenerator:
             # 統計情報の取得
             stats = self.get_summary_stats(results)
             
-            # テスト結果をグループ化
+            # カテゴリ別にテスト結果をグループ化
             grouped_results = {}
             
             for test_key, data in results.items():
-                parts = test_key.split("::")
-                test_name = parts[-1]
-                
-                if len(parts) > 1:
-                    group_name = parts[0].replace("_test_results", "").replace("_", " ")
+                # テスト結果データの取得
+                if isinstance(data, dict):
+                    passed = data.get("passed", False)
+                    description = data.get("description", "説明なし")
+                    source_file = data.get("source_file", "不明")
+                    method = data.get("method", "不明")
+                    execution_time = data.get("execution_time", 0.0)
+                    execution_timestamp = data.get("execution_timestamp", "不明")
+                    category = data.get("category", "その他")
                 else:
-                    group_name = "その他"
-                    
-                if group_name not in grouped_results:
-                    grouped_results[group_name] = []
-                    
-                grouped_results[group_name].append({
-                    "name": test_name,
-                    "passed": data.get("passed", False),
-                    "description": data.get("description", "No description"),
-                    "error_message": data.get("error_message", ""),
-                    "fix_suggestion": data.get("fix_suggestion", ""),
-                    "data": data
+                    passed = data
+                    description = "説明なし"
+                    source_file = "不明"
+                    method = "不明"
+                    execution_time = 0.0
+                    execution_timestamp = "不明"
+                    category = "その他"
+                
+                # カテゴリごとにグループ化
+                if category not in grouped_results:
+                    grouped_results[category] = []
+                
+                grouped_results[category].append({
+                    "name": test_key,
+                    "passed": passed,
+                    "description": description,
+                    "source_file": source_file,
+                    "method": method,
+                    "execution_time": execution_time,
+                    "execution_timestamp": execution_timestamp
                 })
             
-            # 詳細サマリーを生成
+            # レポートの生成
             with open(output_path, "w", encoding="utf-8") as f:
+                # ヘッダー
+                f.write("=" * 80 + "\n")
+                f.write(f"                         テスト実行結果サマリー ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})\n")
+                
+                # 環境情報
+                f.write("【実行環境情報】" + "=" * 64 + "\n")
+                f.write("環境: Windows 10\n")
+                f.write("Python: 3.x\n")
+                f.write("仮想環境: venv\n")
+                f.write(f"実行日時: {datetime.now().strftime('%Y-%m-%d')}\n\n")
+                
+                # 実行状況
+                f.write("【テスト実行状況】\n")
+                f.write(f"実行テスト数: {stats['total']}件\n")
+                f.write(f"成功: {stats['passed']}件\n")
+                f.write(f"失敗: {stats['failed']}件\n")
+                f.write(f"成功率: {stats['success_rate']:.1f}%\n\n")
+                
+                f.write(f"合計実行時間: {stats['total_time']:.2f}秒\n")
+                f.write(f"平均テスト時間: {stats['avg_time']:.2f}秒\n")
+                f.write(f"最長テスト時間: {stats['max_time']:.2f}秒({stats['longest_test']})\n\n")
+                
+                # 詳細結果
+                f.write("=" * 80 + "\n")
+                f.write("                         テスト結果詳細 - 成功したテスト\n")
+                f.write("=" * 80 + "\n\n")
+                
+                # グループごとに表示
+                for group_idx, (group_name, tests) in enumerate(sorted(grouped_results.items()), 1):
+                    # 成功したテストを抽出
+                    passed_count = sum(1 for test in tests if test["passed"])
+                    
+                    # ステータス行
+                    f.write(f"{group_idx}. {group_name} (テストカテゴリ: {group_name})\n")
+                    f.write("-" * 100 + "\n")
+                    f.write(f"ステータス: 成功 ({passed_count}/{len(tests)}テスト成功)\n\n")
+                        
+                    # テーブルヘッダー
+                    f.write(f"{'テスト名':<20}{'対応ファイル':<30}{'メソッド':<20}{'実行時間':<10}{'実行日時':<20}{'検証機能':<50}\n")
+                    f.write("-" * 100 + "\n")
+                    
+                    # 成功したテストのみを表示
+                    passed_tests_list = [test for test in tests if test["passed"]]
+                    for test in passed_tests_list:
+                        f.write(f"{test['name']:<20}{test['source_file']:<30}{test['method']:<20}{test['execution_time']:<10.2f}{test['execution_timestamp']:<20}{test['description']:<50}\n")
+                        f.write("\n")
+                
+                return output_path
+                
+        except Exception as e:
+            logger.error(f"詳細サマリーの生成に失敗しました: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+    def create_report_folder_with_reports(self, no_cleanup=False):
+        """
+        タイムスタンプ付きフォルダを作成し、その中に各種レポートを生成する
+        
+        Args:
+            no_cleanup (bool): Trueの場合、中間ファイルを削除しない
+        
+        Returns:
+            bool: 成功時True、失敗時False
+        """
+        results = self.get_test_results()
+        if not results:
+            logger.error("テスト結果が見つかりません")
+            return False
+        
+        try:
+            # タイムスタンプの取得
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # レポートフォルダの作成
+            report_folder = self.project_root / "tests" / "results" / f"report_{timestamp}"
+            report_folder.mkdir(parents=True, exist_ok=True)
+            
+            logger.info(f"レポートフォルダを作成しました: {report_folder}")
+            
+            # 統計情報の取得
+            stats = self.get_summary_stats(results)
+            
+            # 1. テスト結果サマリーJSON
+            summary_json_path = report_folder / f"test_summary_{timestamp}.json"
+            summary_data = {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "total_tests": stats[0],
+                "passed_tests": stats[1],
+                "failed_tests": stats[2],
+                "pass_rate": stats[3],
+                "results": results
+            }
+            
+            with open(summary_json_path, "w", encoding="utf-8") as f:
+                json.dump(summary_data, f, ensure_ascii=False, indent=2)
+            
+            # 2. テスト結果サマリー（テキスト）
+            report_summary_path = report_folder / f"テスト結果サマリー_{timestamp}.txt"
+            with open(report_summary_path, "w", encoding="utf-8-sig") as f:
                 f.write("=" * 80 + "\n")
                 f.write(" " * 25 + "テスト実行結果サマリー (" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ")\n")
                 f.write("=" * 80 + "\n\n")
                 
-                # 環境情報
-                f.write("【実行環境情報】\n")
-                f.write("環境: Windows 10\n")
-                f.write("Python: 3.x\n")
-                f.write("仮想環境: venv\n")
-                f.write("実行日時: " + datetime.now().strftime("%Y-%m-%d") + "\n\n")
+                f.write(f"{'TEST NAME':<60}{'RESULT':<10}{'FUNCTIONALITY ASSURED'}\n")
+                f.write("-" * 100 + "\n")
                 
-                # 統計情報
-                f.write("【テスト実行状況】\n")
-                total_tests = stats[0]
-                passed_tests = stats[1]
-                failed_tests = stats[2]
-                pass_rate = stats[3]
-                f.write(f"実行テスト数: {total_tests}件\n")
-                f.write(f"成功: {passed_tests}件\n")
-                f.write(f"失敗: {failed_tests}件\n")
-                f.write(f"成功率: {pass_rate:.1f}%\n\n")
-                
-                f.write("=" * 80 + "\n")
-                f.write(" " * 25 + "テスト結果詳細 - 成功したテスト\n")
-                f.write("=" * 80 + "\n\n")
-                
-                # グループごとに結果を表示
-                for group_idx, (group_name, tests) in enumerate(sorted(grouped_results.items()), 1):
-                    # グループ内で成功したテストの数を集計
-                    passed_in_group = sum(1 for test in tests if test["passed"])
-                    total_in_group = len(tests)
+                for test_key, data in sorted(results.items()):
+                    # データの型に応じた処理
+                    if isinstance(data, dict):
+                        status = "PASS" if data.get("passed", False) else "FAIL"
+                        description = data.get("description", "No description")
+                    elif isinstance(data, bool):
+                        status = "PASS" if data else "FAIL"
+                        description = "No description available"
+                    elif isinstance(data, (int, float)):
+                        status = "PASS" if data else "FAIL"
+                        description = "No description available"
+                    else:
+                        status = "ERROR"
+                        description = f"Invalid data type: {type(data)}"
                     
-                    # 成功したテストが1件以上ある場合のみグループを表示
-                    if passed_in_group > 0:
-                        f.write(f"{group_idx}. {group_name} (tests/results/{group_name.lower().replace(' ', '_')}_test_results.json)\n")
-                        f.write("-" * 80 + "\n")
-                        f.write(f"ステータス: {'成功' if passed_in_group == total_in_group else '一部成功'} ({passed_in_group}/{total_in_group}テスト成功)\n\n")
-                        
-                        # テーブルヘッダー
-                        f.write(f"{'テスト名':<25}{'対応ファイル':<35}{'メソッド':<30}{'検証機能'}\n")
-                        f.write("-" * 80 + "\n")
-                        
-                        # 成功したテストのみを表示
-                        passed_tests_list = [test for test in tests if test["passed"]]
-                        for test in sorted(passed_tests_list, key=lambda t: t["name"]):
-                            test_name = test["name"]
-                            
-                            # 対応するファイルとメソッドを取得
-                            file_info = test_file_method_map.get(test_name, {"file": "不明", "method": "不明", "function": test["description"]})
-                            
-                            f.write(f"{test_name:<25}{file_info['file']:<35}{file_info['method']:<30}{file_info['function']}\n")
-                        
-                        f.write("\n")
-                
-                # 失敗したテストの詳細セクション
-                f.write("=" * 80 + "\n")
-                f.write(" " * 25 + "テスト結果詳細 - 失敗したテスト\n")
-                f.write("=" * 80 + "\n\n")
-                
-                has_failed_tests = False
-                # グループごとに失敗したテストを表示
-                for group_idx, (group_name, tests) in enumerate(sorted(grouped_results.items()), 1):
-                    # 失敗したテストを抽出
-                    failed_tests_list = [test for test in tests if not test["passed"]]
+                    parts = test_key.split("::")
+                    test_name = parts[-1]
                     
-                    if failed_tests_list:
-                        has_failed_tests = True
-                        f.write(f"{group_idx}. {group_name} (tests/results/{group_name.lower().replace(' ', '_')}_test_results.json)\n")
-                        f.write("-" * 80 + "\n")
-                        f.write(f"失敗テスト数: {len(failed_tests_list)}/{len(tests)}\n\n")
+                    if len(parts) > 1:
+                        file_name = parts[0].replace("_test_results", "").replace("_", " ")
+                        display_name = f"{file_name} > {test_name}"
+                    else:
+                        display_name = test_name
+                    
+                    if len(display_name) > 57:
+                        display_name = display_name[:54] + "..."
                         
-                        # テーブルヘッダー
-                        f.write(f"{'テスト名':<25}{'エラー内容':<35}{'修正案'}\n")
-                        f.write("-" * 80 + "\n")
-                        
-                        for test in sorted(failed_tests_list, key=lambda t: t["name"]):
-                            test_name = test["name"]
-                            error_message = test.get("error_message", "不明なエラー")
-                            fix_suggestion = test.get("fix_suggestion", "")
-                            
-                            f.write(f"{test_name:<25}{error_message:<35}{fix_suggestion}\n")
-                        
-                        f.write("\n")
+                    f.write(f"{display_name:<60}{status:<10}{description}\n")
                 
-                if not has_failed_tests:
-                    f.write("すべてのテストは成功しました。\n\n")
-                
-                # エラーの種類別分析
+                f.write("-" * 100 + "\n")
+                f.write(f"Total: {stats[0]} tests ({stats[1]} passed / {stats[2]} failed)\n")
+                f.write(f"Success rate: {stats[3]:.1f}%\n")
                 f.write("=" * 80 + "\n")
-                f.write(" " * 25 + "エラーパターン分析\n")
-                f.write("=" * 80 + "\n\n")
-                
-                # エラーメッセージでグループ化
-                error_patterns = {}
-                for test_key, data in results.items():
-                    if not data.get("passed", False):
-                        error_msg = data.get("error_message", "不明なエラー")
-                        # シンプルなパターンに変換（例: AttributeError, NoSuchElementException）
-                        if "AttributeError" in error_msg:
-                            pattern = "AttributeError"
-                        elif "NoSuchElementException" in error_msg:
-                            pattern = "NoSuchElementException"
-                        elif "AssertionError" in error_msg:
-                            pattern = "AssertionError"
-                        else:
-                            pattern = "その他のエラー"
-                            
-                        if pattern not in error_patterns:
-                            error_patterns[pattern] = []
-                        
-                        parts = test_key.split("::")
-                        test_name = parts[-1]
-                        
-                        if len(parts) > 1:
-                            group_name = parts[0].replace("_test_results", "").replace("_", " ")
-                            display_name = f"{group_name} > {test_name}"
-                        else:
-                            display_name = test_name
-                            
-                        error_patterns[pattern].append({
-                            "name": display_name,
-                            "message": error_msg,
-                            "fix": data.get("fix_suggestion", "")
-                        })
-                
-                # エラーパターン別に表示
-                if error_patterns:
-                    for pattern, errors in sorted(error_patterns.items()):
-                        f.write(f"■ {pattern} ({len(errors)}件)\n")
-                        f.write("-" * 80 + "\n")
-                        
-                        # 最初の5件だけ表示
-                        for i, error in enumerate(errors[:5]):
-                            f.write(f"{i+1}. {error['name']}: {error['message']}\n")
-                            if error['fix']:
-                                f.write(f"   修正案: {error['fix']}\n")
-                        
-                        # 5件以上ある場合は省略
-                        if len(errors) > 5:
-                            f.write(f"... 他 {len(errors) - 5} 件\n")
-                        
-                        f.write("\n")
-                else:
-                    f.write("エラーは発生していません。\n\n")
-                
-                # 修正内容（例：ヘッドレスモード関連）
-                f.write("=" * 80 + "\n")
-                f.write(" " * 25 + "ヘッドレスモード関連の修正内容\n")
-                f.write("=" * 80 + "\n\n")
-                
-                f.write("対象ファイル: tests/test_login_analyzer.py\n")
-                f.write("修正内容: ブラウザインスタンス初期化時のheadless設定を修正\n\n")
-                
-                f.write("修正前:\n")
-                f.write("```python\n")
-                f.write("headless = env.get_config_value(\"BROWSER\", \"headless\", \"false\")\n")
-                f.write("```\n\n")
-                
-                f.write("修正後:\n")
-                f.write("```python\n")
-                f.write("headless_config = env.get_config_value(\"BROWSER\", \"headless\", \"false\")\n")
-                f.write("headless = headless_config if isinstance(headless_config, bool) else headless_config.lower() == \"true\"\n")
-                f.write("```\n\n")
-                
-                f.write("解決したエラー: Boolean型とString型の互換性問題によるAttributeError\n")
-                f.write("効果: 設定がString型で\"true\"や\"false\"の場合も、Boolean型で\"True\"や\"False\"の場合も正しく処理できるようになった\n\n")
-                
-                # 今後の改善点
-                f.write("=" * 80 + "\n")
-                f.write(" " * 25 + "今後の改善点\n")
-                f.write("=" * 80 + "\n\n")
-                
-                f.write("1. テスト失敗時のスクリーンショット保存機能の強化\n")
-                f.write("2. WebDriverManagerのバージョン互換性確保\n")
-                f.write("3. 設定値の型変換処理の共通化\n")
-                f.write("4. エラーメッセージ検出ロジックの精度向上\n")
-                f.write("5. ログファイル出力フォーマットの標準化\n")
-                f.write("6. BigQueryテスト用のモックデータセット作成\n")
-                f.write("7. テスト前提条件チェックの追加\n")
             
-            logger.info(f"詳細テスト結果サマリーを {output_path} に保存しました")
-            return output_path
-                
+            # 3. 詳細テスト結果
+            report_details_path = report_folder / f"詳細テスト結果_{timestamp}.txt"
+            self.detailed_summary(output_path=report_details_path)
+            
+            # 4. 生成されたレポートファイルの一覧
+            report_files_path = report_folder / f"生成されたレポートファイル_{timestamp}.txt"
+            with open(report_files_path, "w", encoding="utf-8") as f:
+                f.write(f"テスト実行日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+                f.write("生成されたレポートファイル:\n")
+                f.write("1. テスト結果サマリー (JSON形式):\n")
+                f.write(f"   {summary_json_path.name}\n\n")
+                f.write("2. テスト結果サマリー (テキスト形式):\n")
+                f.write(f"   {report_summary_path.name}\n\n")
+                f.write("3. 詳細テスト結果 (テキスト形式):\n")
+                f.write(f"   {report_details_path.name}\n")
+            
+            # 5. 中間ファイルを削除（no_cleanupがFalseの場合のみ）
+            if not no_cleanup:
+                self.cleanup_test_result_files()
+            
+            logger.info(f"レポートファイルの生成が完了しました:")
+            logger.info(f"- {summary_json_path}")
+            logger.info(f"- {report_summary_path}")
+            logger.info(f"- {report_details_path}")
+            logger.info(f"- {report_files_path}")
+            
+            return True
+            
         except Exception as e:
-            logger.error(f"詳細テスト結果の保存に失敗しました: {e}")
-            return None
+            logger.error(f"レポートフォルダの作成中にエラーが発生しました: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return False
+
+    def cleanup_test_result_files(self):
+        """
+        不要なテスト結果ファイルを削除する
+        """
+        try:
+            # *_test_results.jsonファイルを検索して削除
+            test_result_patterns = ["*_test_results.json", "test_results_*.json"]
+            root_json_patterns = ["test_summary_*.json"]
+            root_text_patterns = ["テスト結果サマリー_*.txt", "詳細テスト結果_*.txt", "生成されたレポートファイル_*.txt"]
+            
+            # 削除対象ファイルのリスト
+            files_to_delete = []
+            
+            # テスト結果JSONファイルを検索
+            for pattern in test_result_patterns:
+                for file_path in self.results_dir.glob(pattern):
+                    files_to_delete.append(file_path)
+            
+            # ルートディレクトリのJSONファイルを検索
+            for pattern in root_json_patterns:
+                for file_path in self.results_dir.glob(pattern):
+                    # report_*フォルダの中にあるファイルは除外
+                    if "report_" not in str(file_path.parent.name):
+                        files_to_delete.append(file_path)
+            
+            # ルートディレクトリのテキストファイルを検索
+            for pattern in root_text_patterns:
+                for file_path in self.results_dir.glob(pattern):
+                    # report_*フォルダの中にあるファイルは除外
+                    if "report_" not in str(file_path.parent.name):
+                        files_to_delete.append(file_path)
+            
+            # ファイルを削除
+            deleted_count = 0
+            for file_path in files_to_delete:
+                try:
+                    file_path.unlink()
+                    deleted_count += 1
+                    logger.debug(f"ファイルを削除しました: {file_path}")
+                except Exception as e:
+                    logger.warning(f"ファイル {file_path} の削除に失敗しました: {e}")
+            
+            if deleted_count > 0:
+                logger.info(f"{deleted_count}個の中間ファイルを削除しました")
+            
+            return deleted_count
+        except Exception as e:
+            logger.error(f"ファイル削除中にエラーが発生しました: {e}")
+            return 0
 
 # モジュールとして実行された場合のメイン処理
 def main():
     """コマンドライン実行時のメイン処理"""
+    # コマンドライン引数の解析
+    import argparse
+    parser = argparse.ArgumentParser(description="テスト結果サマリー生成ツール")
+    parser.add_argument("--detailed", action="store_true", help="詳細サマリーを生成")
+    parser.add_argument("--generate-reports", action="store_true", help="すべてのレポートを生成")
+    parser.add_argument("--folder", action="store_true", help="フォルダ内にタイムスタンプ付きでレポート保存")
+    parser.add_argument("--output", type=str, help="出力ファイルパス")
+    parser.add_argument("--format", choices=["txt", "json", "both"], default="both", help="出力形式")
+    parser.add_argument("--cleanup", action="store_true", help="中間ファイルを削除")
+    parser.add_argument("--no-cleanup", action="store_true", help="レポート生成時に中間ファイルを削除しない")
+    
+    args = parser.parse_args()
+    
     print("Test Result Summary Generator")
     print("-" * 40)
     
     generator = TestSummaryGenerator()
     
-    # コマンドライン引数のチェック
-    if len(sys.argv) > 1 and sys.argv[1] == '--detailed':
-        # 詳細サマリーを生成
-        output_path = generator.detailed_summary()
+    # 中間ファイルの削除
+    if args.cleanup:
+        deleted_count = generator.cleanup_test_result_files()
+        print(f"{deleted_count}個の中間ファイルを削除しました")
+        return 0
+    
+    # すべてのレポートを生成（test_runner.pyから呼び出される）
+    if args.generate_reports:
+        # フォルダ構造でレポートを生成（no_cleanupオプションを考慮）
+        result = generator.create_report_folder_with_reports(no_cleanup=args.no_cleanup)
+        return 0 if result else 1
+    
+    # 詳細サマリーを生成
+    if args.detailed:
+        output_path = None
+        if args.output:
+            output_path = Path(args.output)
+        
+        # タイムスタンプ付きフォルダに保存
+        if args.folder:
+            result = generator.create_report_folder_with_reports()
+            return 0 if result else 1
+        
+        # 通常の詳細レポート生成
+        output_path = generator.detailed_summary(output_path=output_path)
         if output_path:
             print(f"\n詳細テスト結果サマリーを {output_path} に保存しました")
         else:
@@ -564,23 +659,29 @@ def main():
             print("まずテストを実行してから再試行してください。")
             return 1
     else:
-        # 標準サマリーを生成
+        # 標準サマリーを生成して表示
         if not generator.generate_summary():
             print("\nNo test results found or could not read them.")
             print("Please run tests first and try again.")
             return 1
             
-        # テキスト形式でサマリーをエクスポート
-        output_path = generator.export_summary(format="txt")
-        if output_path:
-            print(f"\nTest result summary saved to {output_path}")
+        # フォルダモードが指定されていれば、フォルダにレポートを生成
+        if args.folder:
+            result = generator.create_report_folder_with_reports()
+            return 0 if result else 1
+        
+        # 通常の出力形式
+        if args.format in ["txt", "both"]:
+            output_path = generator.export_summary(format="txt")
+            if output_path:
+                print(f"\nTest result summary (TEXT) saved to {output_path}")
+        
+        if args.format in ["json", "both"]:
+            output_path = generator.export_summary(format="json")
+            if output_path:
+                print(f"\nTest result summary (JSON) saved to {output_path}")
         
     return 0
-
-# バッチファイルから直接実行された場合のエントリーポイント
-def run_module():
-    """バッチファイルから実行された場合のエントリーポイント"""
-    return main()
 
 # スクリプトとして直接実行された場合
 if __name__ == "__main__":

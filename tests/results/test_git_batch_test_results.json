@@ -1,0 +1,53 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_git_status": {
+    "passed": true,
+    "description": "GitStatusが正しく動作するかテスト",
+    "execution_time": 0.028915600007167086,
+    "execution_timestamp": "2025-04-07 22:03:52",
+    "error_log": null
+  },
+  "test_git_commit": {
+    "passed": true,
+    "description": "GitCommitが正しく動作するかテスト",
+    "execution_time": 0.11867070000153035,
+    "execution_timestamp": "2025-04-07 22:03:54",
+    "error_log": null
+  },
+  "test_run_command_error": {
+    "passed": true,
+    "description": "コマンド実行エラー時の処理をテスト",
+    "execution_time": 0.001139500003773719,
+    "execution_timestamp": "2025-04-07 22:03:55",
+    "error_log": null
+  },
+  "test_batch_processor_status": {
+    "passed": true,
+    "description": "複数リポジトリの一括ステータス確認をテスト",
+    "execution_time": 0.05878250001114793,
+    "execution_timestamp": "2025-04-07 22:03:56",
+    "error_log": null
+  },
+  "test_batch_processor_with_error": {
+    "passed": true,
+    "description": "一部のリポジトリでエラーが発生する場合のテスト",
+    "execution_time": 0.001175400015199557,
+    "execution_timestamp": "2025-04-07 22:03:58",
+    "error_log": null
+  },
+  "test_find_git_repos": {
+    "passed": true,
+    "description": "Gitリポジトリの検索機能をテスト",
+    "execution_time": 0.0006086000066716224,
+    "execution_timestamp": "2025-04-07 22:03:59",
+    "error_log": null
+  },
+  "test_execute_git_command": {
+    "passed": true,
+    "description": "execute_git_command関数のテスト",
+    "execution_time": 0.0023959000245667994,
+    "execution_timestamp": "2025-04-07 22:04:00",
+    "error_log": null
+  }
+}

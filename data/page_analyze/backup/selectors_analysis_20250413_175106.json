@@ -1,0 +1,73 @@
+[
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_5",
+    "text_value": "全トラフィック",
+    "id": "navbar",
+    "class": "nav-item nav-link",
+    "css": "#navbar > nav > a:nth-child(2) > div",
+    "xpath": "//*[@id='navbar']/nav/a[2]/div",
+    "full_xpath": "//*/html/body/div/div[2]/div/nav/a[2]",
+    "element_type": "クリック可能",
+    "category": "サイドバー",
+    "data_rb_event_key": "all",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "a[data-rb-event-key='all'] > div"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[@data-rb-event-key='all']/div"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "date_picker_trigger",
+    "text_value": "期間選択",
+    "id": "",
+    "class": "date-range-picker-container",
+    "css": ".date-range-picker-container",
+    "xpath": "//div[contains(@class, 'date-range-picker-container')]",
+    "full_xpath": "//*/html/body/div/div[2]/div[2]/div/div[2]/nav/div[2]/div[1]/div",
+    "element_type": "クリック可能",
+    "category": "ナビゲーションバー"
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "date_input",
+    "text_value": "",
+    "id": "",
+    "class": "form-control",
+    "css": ".date-range-picker-container input[type='text']",
+    "xpath": "//div[contains(@class, 'date-range-picker-container')]//input[@type='text']",
+    "full_xpath": "//*/html/body/div/div[2]/div[2]/div/div[2]/nav/div[2]/div[1]/div/input",
+    "element_type": "入力フィールド",
+    "category": "フォーム"
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "apply_button",
+    "text_value": "適用",
+    "id": "",
+    "class": "btn btn-sm btn-primary applyBtn",
+    "css": "button.applyBtn",
+    "xpath": "//button[contains(@class, 'applyBtn')]",
+    "full_xpath": "//*/html/body/div[5]/div[3]/div/button[2]",
+    "element_type": "クリック可能",
+    "category": "ボタン"
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "csv_download_button",
+    "text_value": "CSVダウンロード",
+    "id": "",
+    "class": "btn btn-sm btn-outline-primary csv-download",
+    "css": "button.csv-download",
+    "xpath": "//button[contains(@class, 'csv-download')]",
+    "full_xpath": "//*/html/body/div/div[2]/div[2]/div/div[2]/nav/div[2]/div[4]/div[2]/button",
+    "element_type": "クリック可能",
+    "category": "ボタン"
+  }
+]

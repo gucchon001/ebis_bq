@@ -19,6 +19,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, Union, List, Tuple, Callable
 import urllib.parse
 import re
+import glob
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -211,59 +212,17 @@ class Browser:
     
     def _load_screenshot_settings(self):
         """スクリーンショット関連の設定を読み込む"""
-        try:
-            # スクリーンショット基本設定
-            auto_screenshot_config = self._get_config_value("BROWSER", "auto_screenshot", "true")
-            
-            # 型チェックと変換処理を強化
-            if isinstance(auto_screenshot_config, bool):
-                self.auto_screenshot = auto_screenshot_config
-            elif isinstance(auto_screenshot_config, str):
-                self.auto_screenshot = auto_screenshot_config.lower() in ("true", "yes", "1", "on")
-            else:
-                self.auto_screenshot = True  # デフォルト値
-                self.logger.warning(f"不正なauto_screenshot設定値: {auto_screenshot_config}")
-            
-            self.screenshot_dir = self._get_config_value("BROWSER", "screenshot_dir", "logs/screenshots")
-            self.screenshot_format = self._get_config_value("BROWSER", "screenshot_format", "png")
-            
-            # スクリーンショット品質の設定
-            screenshot_quality_config = self._get_config_value("BROWSER", "screenshot_quality", "100")
-            if isinstance(screenshot_quality_config, int):
-                self.screenshot_quality = screenshot_quality_config
-            else:
-                try:
-                    self.screenshot_quality = int(screenshot_quality_config)
-                except (ValueError, TypeError):
-                    self.screenshot_quality = 100  # デフォルト値
-                    self.logger.warning(f"不正なscreenshot_quality設定値: {screenshot_quality_config}")
-            
-            # エラー時のスクリーンショット設定
-            screenshot_on_error_config = self._get_config_value("BROWSER", "screenshot_on_error", "true")
-            if isinstance(screenshot_on_error_config, bool):
-                self.screenshot_on_error = screenshot_on_error_config
-            elif isinstance(screenshot_on_error_config, str):
-                self.screenshot_on_error = screenshot_on_error_config.lower() in ("true", "yes", "1", "on")
-            else:
-                self.screenshot_on_error = True  # デフォルト値
-                self.logger.warning(f"不正なscreenshot_on_error設定値: {screenshot_on_error_config}")
-            
-            # パスが相対パスの場合、絶対パスに変換
-            if not os.path.isabs(self.screenshot_dir):
-                self.screenshot_dir = os.path.join(self.project_root, self.screenshot_dir)
-            
-            self.logger.debug(f"スクリーンショット設定を読み込みました: auto_screenshot={self.auto_screenshot}, "
-                             f"screenshot_on_error={self.screenshot_on_error}, format={self.screenshot_format}")
+        # スクリーンショット基本設定
+        self.auto_screenshot = self._get_config_value("BROWSER", "auto_screenshot", "true").lower() == "true"
+        self.screenshot_dir = self._get_config_value("BROWSER", "screenshot_dir", "logs/screenshots")
+        self.screenshot_format = self._get_config_value("BROWSER", "screenshot_format", "png")
+        self.screenshot_quality = int(self._get_config_value("BROWSER", "screenshot_quality", "100"))
+        self.screenshot_on_error = self._get_config_value("BROWSER", "screenshot_on_error", "true").lower() == "true"
         
-        except Exception as e:
-            # エラー発生時はデフォルト値を設定
-            self.logger.error(f"スクリーンショット設定の読み込み中にエラーが発生しました: {str(e)}")
-            self.auto_screenshot = False  # エラー時はスクリーンショットを無効化
-            self.screenshot_on_error = True
-            self.screenshot_dir = os.path.join(self.project_root, "logs/screenshots")
-            self.screenshot_format = "png"
-            self.screenshot_quality = 80
-    
+        # パスが相対パスの場合、絶対パスに変換
+        if not os.path.isabs(self.screenshot_dir):
+            self.screenshot_dir = os.path.join(self.project_root, self.screenshot_dir)
+            
     def _setup_fallback_selectors(self):
         """フォールバックセレクタを設定する"""
         # セレクタがまだ設定されていない場合に初期化
@@ -337,12 +296,9 @@ class Browser:
             self.logger.error(f"セレクタの読み込み中にエラーが発生しました: {str(e)}")
             self._setup_fallback_selectors()
     
-    def setup(self, browser_version=None):
+    def setup(self):
         """
         ブラウザドライバーを初期化する
-        
-        Args:
-            browser_version: 特定のブラウザバージョンに対応するドライバーをインストールする場合に指定（省略可能）
         
         Returns:
             bool: 成功した場合はTrue、それ以外はFalse
@@ -353,15 +309,12 @@ class Browser:
             
             # ヘッドレスモードの設定
             if self.headless:
-                chrome_options.add_argument("--headless")
+                chrome_options.add_argument("--headless=new")
                 self.logger.info("ヘッドレスモードを有効化しました")
             
             # その他の一般的なオプション
             chrome_options.add_argument("--no-sandbox")
             chrome_options.add_argument("--disable-dev-shm-usage")
-            # GPUエラーを回避するためのオプションを追加
-            chrome_options.add_argument("--disable-gpu")
-            chrome_options.add_argument("--disable-gl-drawing-for-tests")
             
             # ブラウザのサイズを設定
             window_width = self._get_config_value("BROWSER", "window_width", "1920")
@@ -380,43 +333,23 @@ class Browser:
                         chrome_options.add_argument(option)
                         self.logger.debug(f"追加のブラウザオプション: {option}")
             
-            # ローカルのChromeドライバーを使用
-            try:
-                # 最もシンプルな方法でChromeドライバーを初期化
-                self.logger.info("直接ChromeDriverを初期化します")
-                self.driver = webdriver.Chrome(options=chrome_options)
-                self.logger.info("ChromeDriverの初期化に成功しました")
-            except Exception as local_driver_error:
-                self.logger.warning(f"直接初期化に失敗しました: {str(local_driver_error)}")
-                
-                try:
-                    # WebDriverManagerを使用したフォールバック
-                    self.logger.info("WebDriverManagerを使用して初期化を試みます")
-                    
-                    # 設定ファイルからブラウザバージョンを読み込む（引数で指定されていない場合）
-                    if browser_version is None:
-                        browser_version = self._get_config_value("BROWSER", "chrome_version", None)
-                    
-                    # バージョン指定がある場合は特定バージョンのドライバーをインストール
-                    service = None
-                    if browser_version:
-                        try:
-                            self.logger.info(f"Chrome バージョン {browser_version} 用のドライバーをインストールします")
-                            service = Service(ChromeDriverManager(version=browser_version).install())
-                        except Exception as e:
-                            self.logger.warning(f"指定されたバージョン {browser_version} のドライバー取得に失敗しました: {str(e)}")
-                            self.logger.info("最新のドライバーにフォールバックします")
-                    
-                    # バージョン指定がない場合や前のステップで失敗した場合
-                    if service is None:
-                        self.logger.info("現在のChromeバージョンに適合するドライバーを自動検出します")
-                        service = Service(ChromeDriverManager().install())
-                    
-                    # WebDriverを初期化
-                    self.driver = webdriver.Chrome(service=service, options=chrome_options)
-                except Exception as wdm_error:
-                    self.logger.error(f"WebDriverManagerでの初期化も失敗しました: {str(wdm_error)}")
-                    raise Exception("すべてのChromeDriver初期化方法に失敗しました") from wdm_error
+            # ChromeDriverのパスを取得
+            driver_path = ChromeDriverManager().install()
+            driver_dir = os.path.dirname(driver_path)
+            chromedriver_path = os.path.join(driver_dir, "chromedriver.exe")
+            self.logger.debug(f"ChromeDriverのパス: {chromedriver_path}")
+            
+            # ChromeDriverのサービスを設定
+            service = Service(
+                executable_path=chromedriver_path,
+                log_path="logs/chromedriver.log"
+            )
+            
+            # WebDriverを初期化
+            self.driver = webdriver.Chrome(
+                service=service,
+                options=chrome_options
+            )
             
             # タイムアウトを設定
             self.driver.implicitly_wait(self.timeout)
@@ -744,10 +677,13 @@ class Browser:
             element = WebDriverWait(self.driver, wait_timeout).until(
                 condition((by, value))
             )
+            self.logger.debug(f"要素が見つかりました: by={by}, value={value}")
             return element
             
         except TimeoutException:
-            selector_info = f"{by}={value}" if isinstance(by_or_tuple, tuple) else str(by_or_tuple)
+            # Byオブジェクトを適切に文字列化
+            by_str = str(by).replace("By.", "").lower() if hasattr(by, "__module__") and by.__module__ == "selenium.webdriver.common.by" else str(by)
+            selector_info = f"{by_str}={value}" if isinstance(by_or_tuple, tuple) else str(by_or_tuple)
             self.logger.warning(f"要素の待機中にタイムアウトが発生しました: {selector_info}, 待機時間: {wait_timeout}秒")
             
             # エラー時のスクリーンショット
@@ -961,46 +897,45 @@ class Browser:
     
     def _check_alerts(self):
         """
-        現在表示されているアラート/ダイアログを検出して情報を取得する
+        警告ダイアログの有無を確認する
         
         Returns:
-            dict: アラート情報の辞書
-                - present: アラートが存在するかどうか
-                - text: アラートのテキスト（存在する場合）
-                - type: アラートの種類（'alert', 'confirm', 'prompt'のいずれか）
+            dict: アラート情報
         """
-        result = {
+        alert_info = {
             'present': False,
             'text': '',
-            'type': 'alert'  # デフォルトのタイプ
+            'type': 'none'  # alert, confirm, prompt
         }
         
         try:
-            # アラートの存在を確認
-            alert = self.driver.switch_to.alert
-            
-            # アラートのテキストを取得
-            alert_text = alert.text
-            result['present'] = True
-            result['text'] = alert_text
-            
-            # アラートの種類を推定
-            if '?' in alert_text:
-                result['type'] = 'confirm'
-            elif ':' in alert_text or '入力' in alert_text:
-                result['type'] = 'prompt'
-            
-            self.logger.debug(f"アラート検出: タイプ={result['type']}, テキスト={alert_text}")
-            return result
-            
+            # アラートの存在を確認（0.5秒のタイムアウト）
+            alert = WebDriverWait(self.driver, 0.5).until(EC.alert_is_present())
+            if alert:
+                alert_info['present'] = True
+                alert_info['text'] = alert.text
+                
+                # アラートの種類を判断（ヒューリスティック）
+                if "?" in alert.text or "確認" in alert.text or "confirm" in alert.text.lower():
+                    alert_info['type'] = 'confirm'
+                elif "入力" in alert.text or "プロンプト" in alert.text or "prompt" in alert.text.lower():
+                    alert_info['type'] = 'prompt'
+                else:
+                    alert_info['type'] = 'alert'
+                    
+                # アラートは閉じずに情報だけ返す
+                
+        except TimeoutException:
+            # アラートがない場合は正常
+            pass
         except Exception as e:
-            # NoAlertPresentException が投げられるはず
-            self.logger.debug("アラートは検出されませんでした")
-            return result
+            self.logger.error(f"アラート確認中にエラーが発生しました: {str(e)}")
+            
+        return alert_info
         
-    def find_element_by_text(self, text, element_types=None, exact_match=False, case_sensitive=True, check_visibility=True):
+    def find_element_by_text(self, text, element_types=None, exact_match=False, case_sensitive=True, check_visibility=True, max_retries=3, retry_interval=1):
         """
-        指定したテキストを含む要素を検索する
+        テキストで要素を検索する
         
         Args:
             text (str): 検索するテキスト
@@ -1008,6 +943,8 @@ class Browser:
             exact_match (bool): 完全一致で検索するかどうか
             case_sensitive (bool): 大文字小文字を区別するかどうか
             check_visibility (bool): 表示されている要素のみを対象にするかどうか
+            max_retries (int): リトライ回数
+            retry_interval (float): リトライ間隔（秒）
             
         Returns:
             list: 一致する要素のリスト
@@ -1015,49 +952,100 @@ class Browser:
         if not self.driver:
             self.logger.error("WebDriverが初期化されていません")
             return []
-            
+        
         # 検索対象の要素タイプ設定
         if element_types is None:
             element_types = ['a', 'button', 'span', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'td', 'th']
-            
+        
         # 要素タイプをCSSセレクタに変換
         css_selector = ", ".join(element_types)
         
-        try:
-            # すべての対象要素を取得
-            elements = self.driver.find_elements(By.CSS_SELECTOR, css_selector)
-            matching_elements = []
-            
-            # 対応する大文字・小文字処理
-            search_text = text if case_sensitive else text.lower()
-            
-            for element in elements:
-                # 表示要素のみをチェック（オプション）
-                if check_visibility and not element.is_displayed():
-                    continue
-                    
-                element_text = element.text.strip()
-                if not case_sensitive:
-                    element_text = element_text.lower()
+        retry_count = 0
+        while retry_count < max_retries:
+            try:
+                # ページが安定するまで待機
+                self.wait_for_page_load(timeout=10)
                 
-                # テキスト一致の判定
-                if (exact_match and element_text == search_text) or \
-                   (not exact_match and search_text in element_text):
-                    matching_elements.append({
-                        'element': element,
-                        'text': element.text,
-                        'tag': element.tag_name,
-                        'is_displayed': element.is_displayed(),
-                        'is_enabled': element.is_enabled(),
-                        'location': element.location,
-                        'size': element.size
-                    })
-            
-            return matching_elements
-            
-        except Exception as e:
-            self.logger.error(f"テキスト検索中にエラーが発生しました: {str(e)}")
-            return []
+                # すべての対象要素を取得
+                elements = self.driver.find_elements(By.CSS_SELECTOR, css_selector)
+                matching_elements = []
+                
+                # 対応する大文字・小文字処理
+                search_text = text if case_sensitive else text.lower()
+                
+                for element in elements:
+                    try:
+                        # 要素が古くなっていないか確認
+                        if check_visibility:
+                            WebDriverWait(self.driver, 5).until(
+                                EC.staleness_of(element)
+                            )
+                            continue
+                    except:
+                        pass
+                    
+                    try:
+                        # 表示要素のみをチェック（オプション）
+                        if check_visibility:
+                            try:
+                                if not WebDriverWait(self.driver, 5).until(
+                                    EC.visibility_of(element)
+                                ):
+                                    continue
+                            except:
+                                continue
+                        
+                        element_text = element.text.strip()
+                        if not case_sensitive:
+                            element_text = element_text.lower()
+                        
+                        # テキスト一致の判定
+                        if (exact_match and element_text == search_text) or \
+                           (not exact_match and search_text in element_text):
+                            # 要素の情報を取得する前に安定性を確認
+                            try:
+                                is_displayed = element.is_displayed()
+                                is_enabled = element.is_enabled()
+                                location = element.location
+                                size = element.size
+                                
+                                matching_elements.append({
+                                    'element': element,
+                                    'text': element.text,
+                                    'tag': element.tag_name,
+                                    'is_displayed': is_displayed,
+                                    'is_enabled': is_enabled,
+                                    'location': location,
+                                    'size': size
+                                })
+                            except StaleElementReferenceException:
+                                continue
+                        
+                    except StaleElementReferenceException:
+                        continue
+                    except Exception as e:
+                        self.logger.debug(f"要素の処理中にエラーが発生しました: {str(e)}")
+                        continue
+                
+                return matching_elements
+                
+            except Exception as e:
+                retry_count += 1
+                if retry_count >= max_retries:
+                    self.logger.error(f"テキスト検索中にエラーが発生しました: {str(e)}")
+                    return []
+                
+                self.logger.warning(f"テキスト検索中にエラーが発生しました（リトライ {retry_count}/{max_retries}）: {str(e)}")
+                time.sleep(retry_interval)
+                
+                # ページの再読み込みを試みる
+                try:
+                    self.driver.refresh()
+                    self.wait_for_page_load(timeout=10)
+                except:
+                    pass
+        
+        return []
     
     def find_interactive_elements(self, check_visibility=True):
         """
@@ -1475,30 +1463,376 @@ class Browser:
         
         return details 
 
-    def find_element(self, by, value, timeout=None):
+    def get_selector(self, group: str, name: str) -> Optional[Dict[str, str]]:
         """
-        指定したロケーターに一致する要素を検索する
+        指定されたグループと名前に対応するセレクタ情報を取得します
         
         Args:
-            by (By): 要素の検索方法（By.ID, By.CSS_SELECTOR など）
-            value (str): セレクタの値
-            timeout (int, optional): タイムアウト（秒）。省略時はデフォルト値を使用
+            group (str): セレクタのグループ名
+            name (str): セレクタの名前
             
         Returns:
-            WebElement or None: 見つかった要素、見つからない場合はNone
+            Optional[Dict[str, str]]: セレクタ情報を含む辞書。見つからない場合はNone
+            
+        Example:
+            selector = browser.get_selector("login", "username")
+            if selector:
+                element = browser.find_element(
+                    by=selector["selector_type"],
+                    value=selector["selector_value"]
+                )
         """
-        wait_timeout = timeout or self.timeout
         try:
-            # 要素を明示的に待機して検索
-            wait = WebDriverWait(self.driver, wait_timeout)
-            element = wait.until(
-                EC.presence_of_element_located((by, value))
-            )
-            self.logger.debug(f"要素を検出しました: {by}={value}")
-            return element
-        except TimeoutException:
-            self.logger.warning(f"要素が見つかりませんでした: {by}={value}")
-            return None
+            # セレクタが読み込まれていない場合は読み込む
+            if not self.selectors:
+                self._load_selectors()
+            
+            # グループが存在するか確認
+            if group not in self.selectors:
+                self.logger.warning(f"セレクタグループが見つかりません: {group}")
+                return None
+            
+            # セレクタ名が存在するか確認
+            if name not in self.selectors[group]:
+                self.logger.warning(f"セレクタが見つかりません: {group}.{name}")
+                return None
+            
+            # セレクタ情報を返す
+            selector_info = self.selectors[group][name]
+            self.logger.debug(f"セレクタを取得しました: {group}.{name} ({selector_info.get('description', '')})")
+            return selector_info
+            
         except Exception as e:
-            self.logger.error(f"要素検索中にエラーが発生しました: {str(e)}")
+            self.logger.error(f"セレクタの取得中にエラーが発生しました: {str(e)}")
             return None 
+
+    def click_element_by_selector(self, group: str, name: str, wait_time: Optional[int] = None, 
+                                  use_js: bool = False, retry_count: int = 2, timeout: Optional[int] = None) -> bool:
+        """
+        セレクタグループと名前を使用して要素を検索し、クリックする
+        
+        Args:
+            group: セレクタグループ
+            name: セレクタ名
+            wait_time: 要素を待機する時間（秒、Noneの場合はデフォルト値を使用）（旧パラメータ、timeoutを優先）
+            use_js: JavaScriptを使用したクリックを試みるかどうか
+            retry_count: クリック失敗時のリトライ回数
+            timeout: 要素を待機する時間（秒、Noneの場合はデフォルト値を使用）
+            
+        Returns:
+            bool: クリックが成功した場合はTrue、失敗した場合はFalse
+        """
+        if not self.driver:
+            self.logger.error("ドライバーが初期化されていません")
+            return False
+            
+        # timeout パラメータが指定されている場合は優先、そうでなければ wait_time を使用
+        effective_wait_time = timeout if timeout is not None else wait_time
+            
+        # 要素を取得
+        element = self.get_element(group, name, wait_time=effective_wait_time, visible=True)
+        if not element:
+            self.logger.error(f"クリック対象の要素が見つかりません: グループ={group}, 名前={name}")
+            return False
+            
+        try:
+            # 要素までスクロール
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+            
+            # クリック操作を試行
+            for attempt in range(retry_count + 1):
+                try:
+                    if use_js:
+                        # JavaScriptによるクリック
+                        self.driver.execute_script("arguments[0].click();", element)
+                    else:
+                        # 通常のクリック
+                        element.click()
+                        
+                    self.logger.info(f"要素をクリックしました: グループ={group}, 名前={name}")
+                    
+                    # 自動スクリーンショットが有効な場合
+                    if self.auto_screenshot:
+                        screenshot_name = f"click_{group}_{name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                        self.save_screenshot(screenshot_name)
+                        
+                    return True
+                    
+                except (ElementClickInterceptedException, ElementNotInteractableException) as e:
+                    if attempt < retry_count:
+                        self.logger.warning(f"クリック失敗（リトライ {attempt+1}/{retry_count}）: {str(e)}")
+                        
+                        # リトライの戦略を変更
+                        if not use_js:
+                            # JavaScriptによるクリックを試みる
+                            try:
+                                self.driver.execute_script("arguments[0].click();", element)
+                                self.logger.info(f"JavaScriptによるクリックに成功しました: グループ={group}, 名前={name}")
+                                return True
+                            except Exception as js_error:
+                                self.logger.warning(f"JavaScriptによるクリックも失敗: {str(js_error)}")
+                        
+                        # 少し待機してから再試行
+                        time.sleep(0.5)
+                    else:
+                        raise
+                        
+                except StaleElementReferenceException:
+                    if attempt < retry_count:
+                        self.logger.warning(f"要素が古くなっています。再取得してリトライします。（{attempt+1}/{retry_count}）")
+                        # 要素を再取得
+                        element = self.get_element(group, name, wait_time=effective_wait_time, visible=True)
+                        if not element:
+                            self.logger.error(f"要素の再取得に失敗しました: グループ={group}, 名前={name}")
+                            return False
+                        time.sleep(0.5)
+                    else:
+                        raise
+            
+            # すべてのリトライが失敗した場合
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"要素のクリック中にエラーが発生しました: グループ={group}, 名前={name}, エラー={str(e)}")
+            
+            if self.screenshot_on_error:
+                screenshot_name = f"error_click_{group}_{name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                self.save_screenshot(screenshot_name)
+                
+            # 最後の手段としてJavaScriptクリックを試みる（まだ試していない場合）
+            if not use_js:
+                try:
+                    self.logger.info("最終手段としてJavaScriptによるクリックを試みます")
+                    self.driver.execute_script("arguments[0].click();", element)
+                    self.logger.info(f"JavaScriptによるクリックに成功しました: グループ={group}, 名前={name}")
+                    return True
+                except Exception as js_error:
+                    self.logger.error(f"JavaScriptによるクリックも失敗: {str(js_error)}")
+            
+            return False
+            
+    def input_text_by_selector(self, group: str, name: str, text: str, wait_time: Optional[int] = None, clear_first: bool = True, timeout: Optional[int] = None) -> bool:
+        """
+        セレクタグループと名前を使用して要素を検索し、テキストを入力する
+        
+        Args:
+            group: セレクタグループ
+            name: セレクタ名
+            text: 入力するテキスト
+            wait_time: 要素を待機する時間（秒、Noneの場合はデフォルト値を使用）（旧パラメータ、timeoutを優先）
+            clear_first: 入力前にフィールドをクリアするかどうか
+            timeout: 要素を待機する時間（秒、Noneの場合はデフォルト値を使用）
+            
+        Returns:
+            bool: 入力が成功した場合はTrue、失敗した場合はFalse
+        """
+        if not self.driver:
+            self.logger.error("ドライバーが初期化されていません")
+            return False
+            
+        # timeout パラメータが指定されている場合は優先、そうでなければ wait_time を使用
+        effective_wait_time = timeout if timeout is not None else wait_time
+            
+        # 要素を取得
+        element = self.get_element(group, name, wait_time=effective_wait_time, visible=True)
+        if not element:
+            self.logger.error(f"入力対象の要素が見つかりません: グループ={group}, 名前={name}")
+            return False
+            
+        try:
+            # 要素までスクロール
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+            
+            # 入力前にフィールドをクリアする（オプション）
+            if clear_first:
+                try:
+                    element.clear()
+                except Exception as e:
+                    self.logger.warning(f"要素のクリアに失敗しました: {str(e)}")
+                    # JavaScriptでクリアを試みる
+                    try:
+                        self.driver.execute_script("arguments[0].value = '';", element)
+                    except Exception as js_error:
+                        self.logger.warning(f"JavaScriptによるクリアも失敗: {str(js_error)}")
+            
+            # テキストを入力
+            element.send_keys(text)
+            self.logger.info(f"テキストを入力しました: グループ={group}, 名前={name}, テキスト={text}")
+            
+            # 自動スクリーンショットが有効な場合
+            if self.auto_screenshot:
+                screenshot_name = f"input_{group}_{name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                self.save_screenshot(screenshot_name)
+                
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"テキスト入力中にエラーが発生しました: グループ={group}, 名前={name}, エラー={str(e)}")
+            
+            if self.screenshot_on_error:
+                screenshot_name = f"error_input_{group}_{name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                self.save_screenshot(screenshot_name)
+                
+            # JavaScriptでの入力を試みる
+            try:
+                self.logger.info("JavaScriptによるテキスト入力を試みます")
+                self.driver.execute_script(f"arguments[0].value = '{text}';", element)
+                self.logger.info(f"JavaScriptによるテキスト入力に成功しました: グループ={group}, 名前={name}")
+                return True
+            except Exception as js_error:
+                self.logger.error(f"JavaScriptによるテキスト入力も失敗: {str(js_error)}")
+            
+            return False
+
+    def detect_page_changes(self, wait_seconds=3):
+        # ... existing code ...
+        pass 
+
+    def get_latest_download(self, download_dir=None, wait_time=0, file_types=None):
+        """
+        指定したダウンロードディレクトリから最新のダウンロードファイルを取得します
+        
+        Args:
+            download_dir (str, optional): ダウンロードディレクトリのパス。指定がない場合は設定から取得
+            wait_time (int, optional): ダウンロード完了を待機する時間（秒）
+            file_types (list, optional): 検索するファイル拡張子のリスト。例: ['.csv', '.xlsx']
+            
+        Returns:
+            str: 最新のダウンロードファイルの絶対パス。ファイルが見つからない場合はNone
+        """
+        try:
+            # ダウンロードディレクトリが指定されていない場合は設定から取得
+            if not download_dir:
+                download_dir = self._get_config_value("BROWSER", "download_dir", "data/downloads")
+                
+            # パスが相対パスの場合、絶対パスに変換
+            if not os.path.isabs(download_dir):
+                download_dir = os.path.abspath(download_dir)
+            
+            # パスを正規化（Windowsの \ と / の混在を解決）
+            download_dir = os.path.normpath(download_dir)
+                
+            self.logger.debug(f"ダウンロードディレクトリを確認: {download_dir}")
+            
+            # ディレクトリが存在しない場合は作成
+            if not os.path.exists(download_dir):
+                os.makedirs(download_dir, exist_ok=True)
+                self.logger.info(f"ダウンロードディレクトリを作成しました: {download_dir}")
+                
+            # 待機時間が指定されている場合は待機
+            if wait_time > 0:
+                self.logger.debug(f"ダウンロード完了を待機: {wait_time}秒")
+                time.sleep(wait_time)
+                
+            # ダウンロードディレクトリのアクセス状態を確認
+            if not os.path.exists(download_dir):
+                self.logger.error(f"ダウンロードディレクトリが存在しません: {download_dir}")
+                self.logger.debug(f"現在のディレクトリ: {os.getcwd()}")
+                self.logger.debug(f"ディレクトリ内容(親): {os.listdir(os.path.dirname(download_dir)) if os.path.exists(os.path.dirname(download_dir)) else 'ディレクトリが存在しません'}")
+                return None
+                
+            if not os.access(download_dir, os.R_OK):
+                self.logger.error(f"ダウンロードディレクトリにアクセス権限がありません: {download_dir}")
+                return None
+                
+            # ダウンロードディレクトリのファイル一覧を取得
+            files = []
+            
+            # Chromeのダウンロード設定を取得してログ出力
+            try:
+                download_prefs = self.driver.execute_script("return window.navigator.userAgent")
+                self.logger.debug(f"ブラウザのユーザーエージェント: {download_prefs}")
+            except Exception as e:
+                self.logger.debug(f"ブラウザ設定の取得中にエラー: {str(e)}")
+            
+            # ファイルシステムの詳細情報をログに記録
+            try:
+                dir_contents = os.listdir(download_dir)
+                self.logger.debug(f"ダウンロードディレクトリの内容: {dir_contents}")
+                
+                # ディレクトリ内のファイル詳細情報
+                file_details = []
+                for f in dir_contents:
+                    file_path = os.path.join(download_dir, f)
+                    if os.path.isfile(file_path):
+                        file_size = os.path.getsize(file_path)
+                        file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
+                        file_details.append(f"{f} (サイズ: {file_size}バイト, 更新日時: {file_mtime})")
+                
+                if file_details:
+                    self.logger.debug(f"ファイル詳細: {file_details}")
+            except Exception as e:
+                self.logger.error(f"ディレクトリ内容の確認中にエラー: {str(e)}")
+            
+            # 拡張子ごとに検索
+            if file_types:
+                for ext in file_types:
+                    # 拡張子にピリオドが含まれていない場合は追加
+                    if not ext.startswith('.'):
+                        ext = f".{ext}"
+                    pattern = os.path.join(download_dir, f"*{ext}")
+                    found_files = glob.glob(pattern)
+                    self.logger.debug(f"パターン '{pattern}' での検索結果: {len(found_files)} ファイル")
+                    files.extend(found_files)
+            else:
+                # すべてのファイルを検索
+                pattern = os.path.join(download_dir, "*")
+                files = glob.glob(pattern)
+                self.logger.debug(f"パターン '{pattern}' での検索結果: {len(files)} ファイル")
+                
+            # ダウンロード中の一時ファイルを除外
+            files = [f for f in files if not f.endswith('.crdownload') and 
+                     not f.endswith('.part') and not f.endswith('.download')]
+                
+            if not files:
+                self.logger.warning(f"ダウンロードディレクトリに適合するファイルが見つかりません: {download_dir}")
+                
+                # 他の場所も検索する（Window環境の場合）
+                if os.name == 'nt':
+                    # ユーザーのデフォルトダウンロードフォルダをチェック
+                    alt_download_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+                    self.logger.debug(f"代替ダウンロードディレクトリを確認: {alt_download_dir}")
+                    
+                    if os.path.exists(alt_download_dir):
+                        alt_files = glob.glob(os.path.join(alt_download_dir, "*"))
+                        alt_files = [f for f in alt_files if not f.endswith('.crdownload') and 
+                                     not f.endswith('.part') and not f.endswith('.download')]
+                        
+                        if alt_files:
+                            latest_alt_file = max(alt_files, key=os.path.getmtime)
+                            file_mtime = datetime.fromtimestamp(os.path.getmtime(latest_alt_file)).strftime('%Y-%m-%d %H:%M:%S')
+                            
+                            # 最近ダウンロードされたファイルかチェック（15分以内）
+                            if (datetime.now() - datetime.fromtimestamp(os.path.getmtime(latest_alt_file))).total_seconds() < 900:
+                                self.logger.info(f"代替ディレクトリでファイルを発見: {latest_alt_file} (更新日時: {file_mtime})")
+                                return latest_alt_file
+                
+                return None
+                
+            # ファイルを更新日時でソート
+            latest_file = max(files, key=os.path.getmtime)
+            
+            # ファイルサイズを確認
+            file_size = os.path.getsize(latest_file)
+            # 空ファイルをスキップ
+            if file_size == 0:
+                self.logger.warning(f"最新のファイルがサイズ0です: {latest_file}")
+                
+                # 2番目に新しいファイルを試す
+                if len(files) > 1:
+                    files.remove(latest_file)
+                    second_latest = max(files, key=os.path.getmtime)
+                    if os.path.getsize(second_latest) > 0:
+                        self.logger.info(f"2番目に新しいファイルを使用します: {second_latest}")
+                        return second_latest
+                
+                return None
+            
+            self.logger.info(f"最新のダウンロードファイルを検出: {latest_file} (サイズ: {file_size} バイト)")
+            
+            return latest_file
+            
+        except Exception as e:
+            self.logger.error(f"ダウンロードファイルの検出中にエラーが発生: {str(e)}")
+            self.logger.debug(traceback.format_exc())
+            return None

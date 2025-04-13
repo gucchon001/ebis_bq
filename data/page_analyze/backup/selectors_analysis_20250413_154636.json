@@ -1,0 +1,58 @@
+[
+  {
+    "group": "common",
+    "name": "all_traffic_tab",
+    "element_type": "css",
+    "css": "a[data-rb-event-key='all'] > div",
+    "description": "全トラフィックタブ（最高信頼度セレクタ）"
+  },
+  {
+    "group": "common",
+    "name": "all_traffic_tab_xpath",
+    "element_type": "xpath",
+    "css": "//a[@data-rb-event-key='all']/div",
+    "description": "全トラフィックタブ（XPath）"
+  },
+  {
+    "group": "common",
+    "name": "all_traffic_tab_text",
+    "element_type": "xpath",
+    "css": "//a[text()='全トラフィック']",
+    "description": "全トラフィックタブ（テキスト検索用）"
+  },
+  {
+    "group": "date",
+    "name": "date_picker_trigger",
+    "element_type": "css",
+    "css": ".date-range-picker-container",
+    "description": "日付選択コンテナ"
+  },
+  {
+    "group": "date",
+    "name": "date_input",
+    "element_type": "css",
+    "css": ".date-range-picker-container input[type='text']",
+    "description": "日付入力フィールド"
+  },
+  {
+    "group": "date",
+    "name": "apply_button",
+    "element_type": "css",
+    "css": "button.applyBtn",
+    "description": "日付適用ボタン"
+  },
+  {
+    "group": "download",
+    "name": "csv_download_button",
+    "element_type": "css",
+    "css": "button.csv-download",
+    "description": "CSVダウンロードボタン"
+  },
+  {
+    "group": "download",
+    "name": "csv_download_button_text",
+    "element_type": "xpath",
+    "css": "//button[contains(text(), 'CSVダウンロード')]",
+    "description": "CSVダウンロードボタン（テキスト検索用）"
+  }
+]

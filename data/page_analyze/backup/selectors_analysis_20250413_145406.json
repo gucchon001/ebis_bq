@@ -1,0 +1,51 @@
+[
+  {
+    "group": "common",
+    "name": "all_traffic_tab",
+    "selector_type": "css",
+    "selector_value": "a[data-rb-event-key='all'] > div",
+    "description": "全トラフィックタブ（最高信頼度セレクタ）"
+  },
+  {
+    "group": "common",
+    "name": "all_traffic_tab_xpath",
+    "selector_type": "xpath",
+    "selector_value": "//a[@data-rb-event-key='all']/div",
+    "description": "全トラフィックタブ（XPath）"
+  },
+  {
+    "group": "common",
+    "name": "all_traffic_tab_text",
+    "selector_type": "xpath",
+    "selector_value": "//a[text()='全トラフィック']",
+    "description": "全トラフィックタブ（テキスト検索用）"
+  },
+  {
+    "group": "common",
+    "name": "date_picker_trigger",
+    "selector_type": "css",
+    "selector_value": ".date-range-picker__input-container",
+    "description": "日付カレンダーを開くボタン"
+  },
+  {
+    "group": "common",
+    "name": "date_input",
+    "selector_type": "css",
+    "selector_value": ".date-range-picker__input",
+    "description": "日付入力フィールド"
+  },
+  {
+    "group": "common",
+    "name": "apply_button",
+    "selector_type": "xpath",
+    "selector_value": "/html/body/div[1]/div[2]/div[2]/div[1]/div[2]/nav/div[2]/div[1]/div/div[2]/div[2]/div[2]/div[2]/button[2]",
+    "description": "適用ボタン"
+  },
+  {
+    "group": "common",
+    "name": "download_csv_button",
+    "selector_type": "xpath",
+    "selector_value": "//*[@id='common-bar']/div[2]/nav/div[2]/div[4]/div[2]/a",
+    "description": "CSVダウンロードボタン"
+  }
+]

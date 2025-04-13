@@ -1,0 +1,1100 @@
+[
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_1",
+    "text_value": "",
+    "id": "",
+    "class": "logo",
+    "css": "#top-bar > nav.navbar > div:nth-child(1).navbar-nav > a:nth-child(2).logo > img",
+    "xpath": "//*[@id=\"top-bar\"]/nav/div[1]/a",
+    "full_xpath": "//*[@id=\"top-bar\"]/nav/div[1]/a",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#top-bar > nav.navbar > div:nth-child(1).navbar-nav > a:nth-child(2).logo > img"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"top-bar\"]/nav/div[1]/a"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_2",
+    "text_value": "設定/管理",
+    "id": "",
+    "class": "nav-link view w-100 h-100",
+    "css": "#top-bar > nav.navbar > div:nth-child(2).navbar-nav-custom > div.nav-item > a.nav-link[role='button']",
+    "xpath": "//*[@id=\"top-bar\"]/nav/div[2]/div/a",
+    "full_xpath": "//*[@id=\"top-bar\"]/nav/div[2]/div/a",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#top-bar > nav.navbar > div:nth-child(2).navbar-nav-custom > div.nav-item > a.nav-link[role='button']"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='設定/管理']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"top-bar\"]/nav/div[2]/div/a"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_3",
+    "text_value": "データエクスポート",
+    "id": "",
+    "class": "nav-link",
+    "css": "#top-bar > nav.navbar > div:nth-child(3).navbar-nav-custom > div.nav-item > a.nav-link",
+    "xpath": "//*[@id=\"top-bar\"]/nav/div[3]/div/a",
+    "full_xpath": "//*[@id=\"top-bar\"]/nav/div[3]/div/a",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#top-bar > nav.navbar > div:nth-child(3).navbar-nav-custom > div.nav-item > a.nav-link"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='データエクスポート']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"top-bar\"]/nav/div[3]/div/a"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_4",
+    "text_value": "広告",
+    "id": "",
+    "class": "nav-item nav-link active",
+    "css": "#navbar > nav:nth-child(1).nav[role='tablist'] > a:nth-child(1).nav-item[data-rb-event-key='ad'] > div",
+    "xpath": "//*[@id=\"navbar\"]/nav/a[1]/div",
+    "full_xpath": "//*[@id=\"navbar\"]/nav/a[1]/div",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > nav:nth-child(1).nav[role='tablist'] > a:nth-child(1).nav-item[data-rb-event-key='ad'] > div"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='広告']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/nav/a[1]/div"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_5",
+    "text_value": "全トラフィック",
+    "id": "",
+    "class": "nav-item nav-link",
+    "css": "#navbar > nav:nth-child(1).nav[role='tablist'] > a:nth-child(2).nav-item[data-rb-event-key='all'] > div",
+    "xpath": "//*[@id=\"navbar\"]/nav/a[2]/div",
+    "full_xpath": "//*[@id=\"navbar\"]/nav/a[2]/div",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > nav:nth-child(1).nav[role='tablist'] > a:nth-child(2).nav-item[data-rb-event-key='all'] > div"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='全トラフィック']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/nav/a[2]/div"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_6",
+    "text_value": "ダッシュボード",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(1).active > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[1]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[1]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(1).active > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='ダッシュボード']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[1]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_7",
+    "text_value": "カテゴリ分析",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(2).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[2]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[2]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(2).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='カテゴリ分析']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[2]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_8",
+    "text_value": "詳細分析",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(3).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[3]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[3]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(3).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='詳細分析']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[3]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_9",
+    "text_value": "期間分析",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(4).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[4]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[4]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(4).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='期間分析']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[4]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_10",
+    "text_value": "ランディングページ分析",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(5).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[5]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[5]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(5).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='ランディングページ分析']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[5]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_11",
+    "text_value": "コンバージョン属性",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(6).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[6]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[6]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(6).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='コンバージョン属性']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[6]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_12",
+    "text_value": "コンバージョンフロー",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(7).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[7]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[7]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(7).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='コンバージョンフロー']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[7]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_13",
+    "text_value": "コストアロケーション分析",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(8).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[8]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[8]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(8).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='コストアロケーション分析']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[8]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_14",
+    "text_value": "LTVForecast",
+    "id": "",
+    "class": "",
+    "css": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(10).menu-item > a > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[10]/a/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[10]/a/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#navbar > div:nth-child(2).tab-content > div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(10).menu-item > a > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='LTVForecast']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[10]/a/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_15",
+    "text_value": "",
+    "id": "",
+    "class": "page disabled",
+    "css": "#common-bar > div:nth-child(1).container-fluid > div.fade[role='alert'] > a:nth-child(1).page > i",
+    "xpath": "//*[@id=\"common-bar\"]/div[1]/div/a[1]",
+    "full_xpath": "//*[@id=\"common-bar\"]/div[1]/div/a[1]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#common-bar > div:nth-child(1).container-fluid > div.fade[role='alert'] > a:nth-child(1).page > i"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"common-bar\"]/div[1]/div/a[1]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_16",
+    "text_value": "",
+    "id": "",
+    "class": "page disabled",
+    "css": "#common-bar > div:nth-child(1).container-fluid > div.fade[role='alert'] > a:nth-child(3).page > i",
+    "xpath": "//*[@id=\"common-bar\"]/div[1]/div/a[2]",
+    "full_xpath": "//*[@id=\"common-bar\"]/div[1]/div/a[2]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#common-bar > div:nth-child(1).container-fluid > div.fade[role='alert'] > a:nth-child(3).page > i"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"common-bar\"]/div[1]/div/a[2]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_17",
+    "text_value": "こちら",
+    "id": "",
+    "class": "",
+    "css": "#common-bar > div:nth-child(1).container-fluid > div.fade[role='alert'] > a:nth-child(5)",
+    "xpath": "//*[@id=\"common-bar\"]/div[1]/div/a[3]",
+    "full_xpath": "//*[@id=\"common-bar\"]/div[1]/div/a[3]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#common-bar > div:nth-child(1).container-fluid > div.fade[role='alert'] > a:nth-child(5)"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='こちら']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"common-bar\"]/div[1]/div/a[3]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_18",
+    "text_value": "",
+    "id": "",
+    "class": "d-flex align-items-center justify-content-center dropdown-toggle",
+    "css": "div:nth-child(2).pickup__kpi-list > div:nth-child(1).kpi-item > div:nth-child(1).d-flex > div:nth-child(2).icon-dropdown-setting > a[data-testid='ellipsis-button'] > i",
+    "xpath": "//*[@id=\"main-content\"]/div/div[1]/div[2]/div[1]/div[1]/div/a",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[1]/div[2]/div[1]/div[1]/div/a",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(2).pickup__kpi-list > div:nth-child(1).kpi-item > div:nth-child(1).d-flex > div:nth-child(2).icon-dropdown-setting > a[data-testid='ellipsis-button'] > i"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[1]/div[2]/div[1]/div[1]/div/a"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_19",
+    "text_value": "プライバシーポリシー",
+    "id": "",
+    "class": "",
+    "css": "#footer > a:nth-child(2)",
+    "xpath": "//*[@id=\"footer\"]/a[1]",
+    "full_xpath": "//*[@id=\"footer\"]/a[1]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#footer > a:nth-child(2)"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='プライバシーポリシー']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"footer\"]/a[1]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_20",
+    "text_value": "利用契約約款等",
+    "id": "",
+    "class": "",
+    "css": "#footer > a:nth-child(3)",
+    "xpath": "//*[@id=\"footer\"]/a[2]",
+    "full_xpath": "//*[@id=\"footer\"]/a[2]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#footer > a:nth-child(3)"
+      },
+      {
+        "type": "xpath",
+        "value": "//a[text()='利用契約約款等']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"footer\"]/a[2]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_21",
+    "text_value": "",
+    "id": "",
+    "class": "button-hide",
+    "css": "#eye_catcher > a:nth-child(2).button-hide[role='button'] > i",
+    "xpath": "//*[@id=\"eye_catcher\"]/a",
+    "full_xpath": "//*[@id=\"eye_catcher\"]/a",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#eye_catcher > a:nth-child(2).button-hide[role='button'] > i"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"eye_catcher\"]/a"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_22",
+    "text_value": "目標と比較する",
+    "id": "",
+    "class": "dropdown-toggle btn btn-select btn-sm",
+    "css": "#common-bar > div:nth-child(2).clearfix > nav.navbar > div:nth-child(2).dropdown-compare > button.btn",
+    "xpath": "//*[@id=\"common-bar\"]/div[2]/nav/div[2]/button",
+    "full_xpath": "//*[@id=\"common-bar\"]/div[2]/nav/div[2]/button",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#common-bar > div:nth-child(2).clearfix > nav.navbar > div:nth-child(2).dropdown-compare > button.btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='目標と比較する']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"common-bar\"]/div[2]/nav/div[2]/button"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_23",
+    "text_value": "期間：今月（2025/04/01 ～ 2025/04/13）",
+    "id": "",
+    "class": "dropdown-toggle btn btn-select btn-sm",
+    "css": "#common-bar > div:nth-child(2).clearfix > nav.navbar > div:nth-child(3).dropdown-period > button.btn > span",
+    "xpath": "//*[@id=\"common-bar\"]/div[2]/nav/div[3]/button/span",
+    "full_xpath": "//*[@id=\"common-bar\"]/div[2]/nav/div[3]/button/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#common-bar > div:nth-child(2).clearfix > nav.navbar > div:nth-child(3).dropdown-period > button.btn > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='期間：今月（2025/04/01 ～ 2025/04/13）']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"common-bar\"]/div[2]/nav/div[3]/button/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_24",
+    "text_value": "媒体ごとに成果を確認",
+    "id": "",
+    "class": "p-0 btn btn-link btn-sm",
+    "css": "#main-content > div.dashboard > div:nth-child(1).pickup > div:nth-child(3).pickup__button > button.btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[1]/div[3]/button",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[1]/div[3]/button",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#main-content > div.dashboard > div:nth-child(1).pickup > div:nth-child(3).pickup__button > button.btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='媒体ごとに成果を確認']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[1]/div[3]/button"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_25",
+    "text_value": "CV (応募完了)",
+    "id": "",
+    "class": "dropdown-toggle btn btn-select btn-sm",
+    "css": "#main-content > div.dashboard > div:nth-child(2).quick-report > div:nth-child(2).d-flex > div.dropdown > button.btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[2]/div[2]/div/button",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[2]/div[2]/div/button",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#main-content > div.dashboard > div:nth-child(2).quick-report > div:nth-child(2).d-flex > div.dropdown > button.btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='CV (応募完了)']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[2]/div[2]/div/button"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_26",
+    "text_value": "媒体ごとに当月推移を確認",
+    "id": "",
+    "class": "p-0 btn btn-link btn-sm",
+    "css": "#main-content > div.dashboard > div:nth-child(2).quick-report > div:nth-child(4).quick-report__button > button:nth-child(1).btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[2]/div[4]/button[1]",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[2]/div[4]/button[1]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#main-content > div.dashboard > div:nth-child(2).quick-report > div:nth-child(4).quick-report__button > button:nth-child(1).btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='媒体ごとに当月推移を確認']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[2]/div[4]/button[1]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_27",
+    "text_value": "媒体ごとに過去7日推移を比較",
+    "id": "",
+    "class": "p-0 btn btn-link btn-sm",
+    "css": "#main-content > div.dashboard > div:nth-child(2).quick-report > div:nth-child(4).quick-report__button > button:nth-child(2).btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[2]/div[4]/button[2]",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[2]/div[4]/button[2]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#main-content > div.dashboard > div:nth-child(2).quick-report > div:nth-child(4).quick-report__button > button:nth-child(2).btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='媒体ごとに過去7日推移を比較']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[2]/div[4]/button[2]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_28",
+    "text_value": "変化した要因を探す",
+    "id": "",
+    "class": "p-0 media-report__button btn btn-link btn-sm",
+    "css": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(2).row > div:nth-child(2).col-md-auto > button:nth-child(1).btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[1]/div[2]/button[1]",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[1]/div[2]/button[1]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(2).row > div:nth-child(2).col-md-auto > button:nth-child(1).btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='変化した要因を探す']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[1]/div[2]/button[1]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_29",
+    "text_value": "予算配分を見直す",
+    "id": "",
+    "class": "p-0 media-report__button btn btn-link btn-sm",
+    "css": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(2).row > div:nth-child(2).col-md-auto > button:nth-child(2).btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[1]/div[2]/button[2]",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[1]/div[2]/button[2]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(2).row > div:nth-child(2).col-md-auto > button:nth-child(2).btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='予算配分を見直す']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[1]/div[2]/button[2]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_30",
+    "text_value": "変化した要因を探す",
+    "id": "",
+    "class": "p-0 media-report__button btn btn-link btn-sm",
+    "css": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(3).row > div:nth-child(2).col-md-auto > button:nth-child(1).btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[2]/div[2]/button[1]",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[2]/div[2]/button[1]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(3).row > div:nth-child(2).col-md-auto > button:nth-child(1).btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='変化した要因を探す']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[2]/div[2]/button[1]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_31",
+    "text_value": "予算配分を見直す",
+    "id": "",
+    "class": "p-0 media-report__button btn btn-link btn-sm",
+    "css": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(3).row > div:nth-child(2).col-md-auto > button:nth-child(2).btn",
+    "xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[2]/div[2]/button[2]",
+    "full_xpath": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[2]/div[2]/button[2]",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(3).media-report > div:nth-child(2).media-report__content > div:nth-child(3).row > div:nth-child(2).col-md-auto > button:nth-child(2).btn"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[text()='予算配分を見直す']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"main-content\"]/div/div[3]/div[2]/div[2]/div[2]/button[2]"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_32",
+    "text_value": "",
+    "id": "",
+    "class": "nav-link nav-link--icon nav-link--dropdown",
+    "css": "#top-bar > nav.navbar > div:nth-child(4).navbar-nav-icon > div:nth-child(1).dropdown > div.nav-link[role='button'] > div",
+    "xpath": "//*[@id=\"top-bar\"]/nav/div[4]/div[1]/div/div",
+    "full_xpath": "//*[@id=\"top-bar\"]/nav/div[4]/div[1]/div/div",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#top-bar > nav.navbar > div:nth-child(4).navbar-nav-icon > div:nth-child(1).dropdown > div.nav-link[role='button'] > div"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"top-bar\"]/nav/div[4]/div[1]/div/div"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_33",
+    "text_value": "",
+    "id": "",
+    "class": "nav-link nav-link--icon nav-link--dropdown",
+    "css": "#top-bar > nav.navbar > div:nth-child(4).navbar-nav-icon > div:nth-child(2).dropdown > div.nav-link[role='button'] > div",
+    "xpath": "//*[@id=\"top-bar\"]/nav/div[4]/div[2]/div/div",
+    "full_xpath": "//*[@id=\"top-bar\"]/nav/div[4]/div[2]/div/div",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#top-bar > nav.navbar > div:nth-child(4).navbar-nav-icon > div:nth-child(2).dropdown > div.nav-link[role='button'] > div"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"top-bar\"]/nav/div[4]/div[2]/div/div"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_34",
+    "text_value": "",
+    "id": "",
+    "class": "nav-link nav-link--icon nav-link--dropdown",
+    "css": "#top-bar > nav.navbar > div:nth-child(4).navbar-nav-icon > div:nth-child(3).navbar-notification > div.nav-link[role='button'] > div",
+    "xpath": "//*[@id=\"top-bar\"]/nav/div[4]/div[3]/div/div",
+    "full_xpath": "//*[@id=\"top-bar\"]/nav/div[4]/div[3]/div/div",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#top-bar > nav.navbar > div:nth-child(4).navbar-nav-icon > div:nth-child(3).navbar-notification > div.nav-link[role='button'] > div"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"top-bar\"]/nav/div[4]/div[3]/div/div"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_35",
+    "text_value": "講師求人部門\ntomonokai01",
+    "id": "",
+    "class": "dropdown-toggle",
+    "css": "#top-bar > nav.navbar > div:nth-child(5).navbar-user > div.nav-item > div.dropdown-toggle[role='button'] > div",
+    "xpath": "//*[@id=\"top-bar\"]/nav/div[5]/div/div/div",
+    "full_xpath": "//*[@id=\"top-bar\"]/nav/div[5]/div/div/div",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "#top-bar > nav.navbar > div:nth-child(5).navbar-user > div.nav-item > div.dropdown-toggle[role='button'] > div"
+      },
+      {
+        "type": "xpath",
+        "value": "//div[text()='講師求人部門\ntomonokai01']"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"top-bar\"]/nav/div[5]/div/div/div"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_36",
+    "text_value": "",
+    "id": "",
+    "class": "fa-stack has-background",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(1).active > a > span:nth-child(1).fa-stack[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[1]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[1]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(1).active > a > span:nth-child(1).fa-stack[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[1]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_37",
+    "text_value": "",
+    "id": "",
+    "class": "fa-stack has-background",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(2).menu-item > a > span:nth-child(1).fa-stack[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[2]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[2]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(2).menu-item > a > span:nth-child(1).fa-stack[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[2]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_38",
+    "text_value": "",
+    "id": "",
+    "class": "",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(3).menu-item > a > span:nth-child(1)[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[3]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[3]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(3).menu-item > a > span:nth-child(1)[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[3]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_39",
+    "text_value": "",
+    "id": "",
+    "class": "",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(4).menu-item > a > span:nth-child(1)[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[4]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[4]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(4).menu-item > a > span:nth-child(1)[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[4]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_40",
+    "text_value": "",
+    "id": "",
+    "class": "",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(5).menu-item > a > span:nth-child(1)[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[5]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[5]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(5).menu-item > a > span:nth-child(1)[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[5]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_41",
+    "text_value": "",
+    "id": "",
+    "class": "fa-stack has-background",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(6).menu-item > a > span:nth-child(1).fa-stack[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[6]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[6]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(6).menu-item > a > span:nth-child(1).fa-stack[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[6]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_42",
+    "text_value": "",
+    "id": "",
+    "class": "",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(7).menu-item > a > span:nth-child(1)[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[7]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[7]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(7).menu-item > a > span:nth-child(1)[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[7]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_43",
+    "text_value": "",
+    "id": "",
+    "class": "",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(8).menu-item > a > span:nth-child(1)[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[8]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[8]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(8).menu-item > a > span:nth-child(1)[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[8]/a/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_44",
+    "text_value": "",
+    "id": "",
+    "class": "fa-stack has-background",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(9).menu-item > div:nth-child(1).menu-label > span:nth-child(1).fa-stack[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[9]/div/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[9]/div/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(9).menu-item > div:nth-child(1).menu-label > span:nth-child(1).fa-stack[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[9]/div/span[1]/span"
+      }
+    ]
+  },
+  {
+    "group": "detailed_analysis",
+    "name": "clickable_45",
+    "text_value": "",
+    "id": "",
+    "class": "",
+    "css": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(10).menu-item > a > span:nth-child(1)[role='button'] > span",
+    "xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[10]/a/span[1]/span",
+    "full_xpath": "//*[@id=\"navbar\"]/div/div[1]/ul/li[10]/a/span[1]/span",
+    "element_type": "クリック可能",
+    "category": "未分類",
+    "reliable_selectors": [
+      {
+        "type": "css",
+        "value": "div:nth-child(1).tab-pane[role='tabpanel'] > ul.menu-nav > li:nth-child(10).menu-item > a > span:nth-child(1)[role='button'] > span"
+      },
+      {
+        "type": "xpath",
+        "value": "//*[@id=\"navbar\"]/div/div[1]/ul/li[10]/a/span[1]/span"
+      }
+    ]
+  }
+]

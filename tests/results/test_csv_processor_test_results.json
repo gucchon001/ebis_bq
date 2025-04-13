@@ -1,0 +1,74 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_basic_functionality": {
+    "passed": true,
+    "description": "基本的なCSV処理機能のテスト",
+    "execution_time": 0.03566049999790266,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_encoding_detection": {
+    "passed": true,
+    "description": "エンコーディング検出機能のテスト",
+    "execution_time": 0.005731499986723065,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_encoding_retry": {
+    "passed": true,
+    "description": "エンコーディングエラー時の再試行機能をテスト",
+    "execution_time": 0.004302999994251877,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_file_not_found": {
+    "passed": true,
+    "description": "存在しないファイルを指定した場合のエラー処理のテスト",
+    "execution_time": 0.00030929999775253236,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_empty_csv": {
+    "passed": true,
+    "description": "空のCSVファイルを処理した場合のテスト",
+    "execution_time": 0.0025977000186685473,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_headers_only_csv": {
+    "passed": true,
+    "description": "ヘッダー行のみのCSVファイルを処理した場合のテスト",
+    "execution_time": 0.018870300002163276,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_edge_cases": {
+    "passed": true,
+    "description": "データ型の境界値・エッジケースのテスト",
+    "execution_time": 0.015234699996653944,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_custom_header_row": {
+    "passed": true,
+    "description": "ヘッダー行が2行目以降にある場合のテスト",
+    "execution_time": 0.015588199981721118,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_default_settings": {
+    "passed": true,
+    "description": "設定ファイルの欠損時のデフォルト値適用テスト",
+    "execution_time": 0.0006478999857790768,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_read_specific_csv": {
+    "passed": true,
+    "description": "指定されたCSVファイル '2024cvreport.csv' を読み込むテスト",
+    "execution_time": 12.192797099996824,
+    "execution_timestamp": "2025-04-07 22:03:52",
+    "error_log": null
+  }
+}

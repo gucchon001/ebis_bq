@@ -1,0 +1,60 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_service_account_file_exists": {
+    "passed": true,
+    "description": "GCPサービスアカウントファイルが存在するかテスト",
+    "execution_time": 0.0016183999832719564,
+    "execution_timestamp": "2025-04-07 22:05:37",
+    "error_log": null
+  },
+  "test_bigquery_auth": {
+    "passed": true,
+    "description": "BigQueryへの認証テスト",
+    "execution_time": 0.014060199988307431,
+    "execution_timestamp": "2025-04-07 22:05:37",
+    "error_log": null
+  },
+  "test_gcs_auth": {
+    "passed": true,
+    "description": "GCSへの認証テスト",
+    "execution_time": 0.004400899983011186,
+    "execution_timestamp": "2025-04-07 22:05:37",
+    "error_log": null
+  },
+  "test_dataset_exists": {
+    "passed": true,
+    "description": "データセットの存在確認テスト",
+    "execution_time": 4.603357000014512,
+    "execution_timestamp": "2025-04-07 22:05:41",
+    "error_log": null
+  },
+  "test_table_exists": {
+    "passed": true,
+    "description": "テーブルの存在確認テスト",
+    "execution_time": 1.0108305999892764,
+    "execution_timestamp": "2025-04-07 22:05:42",
+    "error_log": null
+  },
+  "test_get_table_schema": {
+    "passed": true,
+    "description": "テーブルスキーマ取得テスト",
+    "execution_time": 1.2832701000152156,
+    "execution_timestamp": "2025-04-07 22:05:44",
+    "error_log": null
+  },
+  "test_bucket_exists": {
+    "passed": true,
+    "description": "バケットの存在確認テスト",
+    "execution_time": 1.6047724999953061,
+    "execution_timestamp": "2025-04-07 22:05:45",
+    "error_log": null
+  },
+  "test_upload_and_list_file": {
+    "passed": true,
+    "description": "ファイルのアップロードとリストテスト",
+    "execution_time": 0.9809960999991745,
+    "execution_timestamp": "2025-04-07 22:05:46",
+    "error_log": null
+  }
+}

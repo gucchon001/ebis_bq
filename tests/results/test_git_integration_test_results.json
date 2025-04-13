@@ -1,0 +1,18 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_check_sensitive_info_before_push": {
+    "passed": true,
+    "description": "プッシュ前の機密情報チェック機能をテスト",
+    "execution_time": 0.004858899977989495,
+    "execution_timestamp": "2025-04-07 22:04:00",
+    "error_log": null
+  },
+  "test_git_batch_with_ai_message": {
+    "passed": true,
+    "description": "バッチプロセッサとAIコミットメッセージ連携をテスト",
+    "execution_time": 0.0010257000103592873,
+    "execution_timestamp": "2025-04-07 22:04:01",
+    "error_log": null
+  }
+}

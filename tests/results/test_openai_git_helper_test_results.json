@@ -1,0 +1,46 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_init": {
+    "passed": true,
+    "description": "初期化が正しく行われるかテスト",
+    "execution_time": 0.0003310999891255051,
+    "execution_timestamp": "2025-04-07 22:04:02",
+    "error_log": null
+  },
+  "test_generate_commit_message": {
+    "passed": true,
+    "description": "コミットメッセージ生成機能をテスト",
+    "execution_time": 0.034813800011761487,
+    "execution_timestamp": "2025-04-07 22:04:03",
+    "error_log": null
+  },
+  "test_analyze_pull_request": {
+    "passed": true,
+    "description": "PRの分析機能をテスト",
+    "execution_time": 0.004659500002162531,
+    "execution_timestamp": "2025-04-07 22:04:04",
+    "error_log": null
+  },
+  "test_analyze_code_quality": {
+    "passed": true,
+    "description": "コード品質分析機能をテスト",
+    "execution_time": 0.01569900001049973,
+    "execution_timestamp": "2025-04-07 22:04:04",
+    "error_log": null
+  },
+  "test_check_sensitive_info": {
+    "passed": true,
+    "description": "機密情報チェック機能をテスト",
+    "execution_time": 0.002582999994046986,
+    "execution_timestamp": "2025-04-07 22:04:05",
+    "error_log": null
+  },
+  "test_execute_ai_git_command_commit": {
+    "passed": true,
+    "description": "AI生成コミットメッセージの実行をテスト",
+    "execution_time": 0.0015488000062759966,
+    "execution_timestamp": "2025-04-07 22:04:06",
+    "error_log": null
+  }
+}

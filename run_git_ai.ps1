@@ -169,7 +169,7 @@ function Show-GitMenu {
     }
 }
 
-function Execute-GitCommand {
+function Invoke-GitCommand {
     param(
         [string]$command,
         [string]$repo_path = $REPO_PATH,
@@ -466,10 +466,10 @@ if ([string]::IsNullOrEmpty($COMMAND)) {
     while ($true) {
         $command = Show-GitMenu
         if (-not [string]::IsNullOrEmpty($command)) {
-            Execute-GitCommand -command $command
+            Invoke-GitCommand -command $command
         }
     }
 } else {
     # コマンドが指定されていれば直接実行
-    Execute-GitCommand -command $COMMAND
+    Invoke-GitCommand -command $COMMAND
 }

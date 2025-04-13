@@ -14,6 +14,7 @@ import subprocess
 import logging
 from pathlib import Path
 from datetime import datetime
+import json
 
 # プロジェクトルートの特定
 project_root = Path(__file__).parents[2]
@@ -105,7 +106,7 @@ def run_tests(test_path=None, parallel=True, processes=2, verbose=True, report=T
         report_file = os.path.join(report_dir, f"test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html")
         pytest_args.extend(["--html", report_file, "--self-contained-html"])
     
-    # JSON形式の結果ファイルを生成
+    # 結果ディレクトリを確実に作成
     results_dir = os.path.join(project_root, "tests", "results")
     os.makedirs(results_dir, exist_ok=True)
     
@@ -117,7 +118,12 @@ def run_tests(test_path=None, parallel=True, processes=2, verbose=True, report=T
         start_time = datetime.now()
         logger.info(f"テスト開始: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
         
-        result = subprocess.run(pytest_args, check=False)
+        # カスタム環境変数を追加して、レポート生成を有効にする
+        env_vars = os.environ.copy()
+        if report:
+            env_vars["GENERATE_TEST_REPORTS"] = "true"
+        
+        result = subprocess.run(pytest_args, check=False, env=env_vars)
         
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
@@ -133,25 +139,38 @@ def run_tests(test_path=None, parallel=True, processes=2, verbose=True, report=T
         # レポート生成が有効な場合
         if report:
             try:
-                # テスト結果サマリーを生成
-                from src.utils.test_summary import TestSummaryGenerator
-                generator = TestSummaryGenerator()
+                # レポート生成はtest_summary.pyに委譲
+                logger.info("test_summary.pyを使用してレポートを生成します...")
                 
-                # サマリー生成
-                generator.generate_summary()
+                # レポート生成を実行（中間ファイルの削除は行わない）
+                summary_result = subprocess.run(
+                    [venv_python, "-m", "src.utils.test_summary", "--generate-reports", "--no-cleanup"],
+                    check=False
+                )
                 
-                # テキストファイルにエクスポート
-                date_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-                summary_path = os.path.join(results_dir, f"テスト結果サマリー_{date_str}.txt")
-                generator.export_summary(output_path=Path(summary_path), format="txt")
-                logger.info(f"テスト結果サマリー(テキスト形式)を生成しました: {summary_path}")
+                if summary_result.returncode == 0:
+                    logger.info("レポート生成が完了しました")
+                    
+                    # レポート生成が完全に終了してから中間ファイルをクリーンアップ
+                    logger.info("中間ファイルのクリーンアップを開始します...")
+                    cleanup_result = subprocess.run(
+                        [venv_python, "-m", "src.utils.test_summary", "--cleanup"],
+                        check=False
+                    )
+                    
+                    if cleanup_result.returncode == 0:
+                        logger.info("中間ファイルのクリーンアップが完了しました")
+                    else:
+                        logger.warning(f"中間ファイルのクリーンアップに失敗しました: 終了コード {cleanup_result.returncode}")
+                else:
+                    logger.warning(f"レポート生成に失敗しました: 終了コード {summary_result.returncode}")
+                    logger.warning("中間ファイルは保持されます")
                 
-                # JSONファイルにもエクスポート
-                json_path = os.path.join(results_dir, f"test_summary_{date_str}.json")
-                generator.export_summary(output_path=Path(json_path), format="json")
-                logger.info(f"テスト結果サマリー(JSON形式)を生成しました: {json_path}")
             except Exception as e:
                 logger.error(f"レポート生成中にエラーが発生しました: {str(e)}")
+                import traceback
+                logger.error(traceback.format_exc())
+                logger.warning("中間ファイルは保持されます")
         
         # HTMLレポートが生成された場合
         if html_report and result.returncode == 0:
@@ -161,6 +180,8 @@ def run_tests(test_path=None, parallel=True, processes=2, verbose=True, report=T
         
     except Exception as e:
         logger.error(f"テスト実行中にエラーが発生しました: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
         return 1
 
 def main():
@@ -174,8 +195,15 @@ def main():
     parser.add_argument("--html", action="store_true", help="HTML形式のレポートを生成")
     parser.add_argument("--no-skip", action="store_true", help="スキップマーク付きのテストも実行する")
     parser.add_argument("--run-xfail", action="store_true", help="失敗が予期されるテストも実行する")
+    parser.add_argument("-i", "--interactive", action="store_true", help="インタラクティブモードで実行")
     
     args = parser.parse_args()
+    
+    # インタラクティブモードの場合
+    if args.interactive:
+        logger.info("インタラクティブモードはrun_tests.ps1から起動してください")
+        print("インタラクティブモードはrun_tests.ps1から起動してください")
+        return 0
     
     # プロセス数の処理
     if args.processes != "auto":
@@ -197,7 +225,31 @@ def main():
         run_xfail=args.run_xfail
     )
     
-    sys.exit(exit_code)
+    return exit_code
+
+def interactive_menu():
+    """インタラクティブなテスト実行メニューを表示する（簡略版）"""
+    print("\nインタラクティブモードはrun_tests.ps1から起動することを推奨します")
+    print("実行を継続する場合は、以下のオプションから選択してください：")
+    
+    while True:
+        print("\n===== テスト実行メニュー (簡略版) =====")
+        print("1: すべてのテストを実行")
+        print("0: 終了")
+        
+        choice = input("\n選択してください (0-1): ")
+        
+        if choice == "0":
+            print("プログラムを終了します")
+            return
+        
+        elif choice == "1":
+            # すべてのテストを実行
+            print("\nすべてのテストを実行します...")
+            run_tests(parallel=True, report=True)
+        
+        else:
+            print("無効な選択です。もう一度お試しください。")
 
 if __name__ == "__main__":
     main() 

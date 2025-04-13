@@ -1,0 +1,29 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "common",
+  "プロジェクト構造確認": {
+    "passed": true,
+    "description": "基本ディレクトリ構造が適切で、アプリケーションが正しく実行できる環境が整っている",
+    "execution_timestamp": "2025-04-07 22:03:40"
+  },
+  "設定ファイル確認": {
+    "passed": true,
+    "description": "環境変数と設定ファイルが正しく配置され、アプリケーションが設定を適切に読み込める",
+    "execution_timestamp": "2025-04-07 22:03:40"
+  },
+  "モジュール構造確認": {
+    "passed": true,
+    "description": "ビジネスロジックモジュールの構造が維持され、機能拡張時の整合性が担保されている",
+    "execution_timestamp": "2025-04-07 22:03:40"
+  },
+  "ユーティリティ確認": {
+    "passed": true,
+    "description": "共通ユーティリティが適切に構成され、環境管理とロギング機能が利用可能な状態にある",
+    "execution_timestamp": "2025-04-07 22:03:40"
+  },
+  "ログディレクトリ確認": {
+    "passed": true,
+    "description": "ログ出力先が確保され、アプリケーションの動作ログが適切に記録できる",
+    "execution_timestamp": "2025-04-07 22:03:40"
+  }
+}

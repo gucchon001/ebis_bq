@@ -1,0 +1,44 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "google-cloud",
+  "test_service_account_file_exists": {
+    "passed": true,
+    "description": "GCPサービスアカウントファイルの存在確認",
+    "execution_timestamp": "2025-04-07 22:05:37"
+  },
+  "test_bigquery_auth": {
+    "passed": true,
+    "description": "BigQueryへの認証機能",
+    "execution_timestamp": "2025-04-07 22:05:37"
+  },
+  "test_gcs_auth": {
+    "passed": true,
+    "description": "Google Cloud Storageへの認証機能",
+    "execution_timestamp": "2025-04-07 22:05:37"
+  },
+  "test_dataset_exists": {
+    "passed": true,
+    "description": "BigQueryデータセットの存在確認と作成機能",
+    "execution_timestamp": "2025-04-07 22:05:41"
+  },
+  "test_table_exists": {
+    "passed": true,
+    "description": "BigQueryテーブルの存在確認と作成機能",
+    "execution_timestamp": "2025-04-07 22:05:42"
+  },
+  "test_get_table_schema": {
+    "passed": true,
+    "description": "BigQueryテーブルスキーマ取得機能",
+    "execution_timestamp": "2025-04-07 22:05:44"
+  },
+  "test_bucket_exists": {
+    "passed": true,
+    "description": "GCSバケットの存在確認と作成機能",
+    "execution_timestamp": "2025-04-07 22:05:45"
+  },
+  "test_upload_and_list_file": {
+    "passed": true,
+    "description": "GCSファイルのアップロードとリスト機能",
+    "execution_timestamp": "2025-04-07 22:05:46"
+  }
+}

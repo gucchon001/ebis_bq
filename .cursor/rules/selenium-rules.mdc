@@ -1,6 +1,6 @@
 ---
 description: Seleniumを使用したブラウザ自動化のルール
-globs: **/*browser.py,**/*selenium*.py,**/webdriver*.py
+globs: **/*selenium*.py,**/webdriver*.py,**/login*.py,**/*browser*.py
 alwaysApply: false
 ---
 ## セレクタ管理

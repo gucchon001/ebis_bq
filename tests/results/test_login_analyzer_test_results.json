@@ -1,0 +1,43 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_login_form_detection": {
+    "passed": true,
+    "description": "ログインフォームの自動検出テスト",
+    "execution_time": 56.27784460000112,
+    "execution_timestamp": "2025-04-07 22:09:21",
+    "error_log": null
+  },
+  "test_login_failure_detection": {
+    "passed": true,
+    "description": "ログイン失敗時のエラーメッセージ検出テスト",
+    "execution_time": 112.26365229999647,
+    "execution_timestamp": "2025-04-07 22:11:13",
+    "error_log": null
+  },
+  "test_login_security_features": {
+    "passed": true,
+    "description": "ログインページのセキュリティ機能検出テスト",
+    "execution_time": 57.46211590000894,
+    "execution_timestamp": "2025-04-07 22:12:11",
+    "error_log": null
+  },
+  "test_login_page_performance": {
+    "passed": true,
+    "description": "ログインページのパフォーマンス測定テスト",
+    "execution_time": 0.06376449999515899,
+    "execution_timestamp": "2025-04-07 22:12:11",
+    "error_log": null
+  },
+  "test_login_success_workflow": {
+    "passed": false,
+    "description": "ログイン成功時のワークフロー検証テスト",
+    "execution_time": 121.35823739998159,
+    "execution_timestamp": "2025-04-07 22:14:12",
+    "error_log": {
+      "type": "AssertionError",
+      "message": "ログイン成功を検出できませんでした\nassert False",
+      "traceback": "  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 341, in from_call\n    result: Optional[TResult] = func()\n                                ^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 262, in <lambda>\n    lambda: ihook(item=item, **kwds), when=when, reraise=reraise\n            ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_hooks.py\", line 513, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 182, in _multicall\n    return outcome.get_result()\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_result.py\", line 100, in get_result\n    raise exc.with_traceback(exc.__traceback__)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 103, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 177, in pytest_runtest_call\n    raise e\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 169, in pytest_runtest_call\n    item.runtest()\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\python.py\", line 1792, in runtest\n    self.ihook.pytest_pyfunc_call(pyfuncitem=self)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_hooks.py\", line 513, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 139, in _multicall\n    raise exception.with_traceback(exception.__traceback__)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 103, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\python.py\", line 194, in pytest_pyfunc_call\n    result = testfunction(**testargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_login_analyzer.py\", line 583, in test_login_success_workflow\n    assert login_successful, \"ログイン成功を検出できませんでした\"\n"
+    }
+  }
+}

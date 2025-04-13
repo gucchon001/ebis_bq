@@ -1,0 +1,32 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_service_account_file_exists": {
+    "passed": true,
+    "description": "サービスアカウントファイルが存在するかテスト",
+    "execution_time": 0.0015418000111822039,
+    "execution_timestamp": "2025-04-07 22:20:18",
+    "error_log": null
+  },
+  "test_spreadsheet_auth": {
+    "passed": true,
+    "description": "実際のGoogle APIへの認証テスト",
+    "execution_time": 0.01672010001493618,
+    "execution_timestamp": "2025-04-07 22:20:18",
+    "error_log": null
+  },
+  "test_spreadsheet_access": {
+    "passed": true,
+    "description": "スプレッドシートへのアクセステスト",
+    "execution_time": 3.1787178000085987,
+    "execution_timestamp": "2025-04-07 22:20:21",
+    "error_log": null
+  },
+  "test_spreadsheet_data_read": {
+    "passed": true,
+    "description": "スプレッドシートからデータを読み取るテスト",
+    "execution_time": 2.216276099992683,
+    "execution_timestamp": "2025-04-07 22:20:23",
+    "error_log": null
+  }
+}

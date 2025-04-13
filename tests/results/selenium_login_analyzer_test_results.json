@@ -1,0 +1,24 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "selenium",
+  "test_login_form_detection": {
+    "passed": true,
+    "description": "ログインフォームを自動的に検出し、入力フィールドやボタンを識別できる",
+    "execution_timestamp": "2025-04-07 22:09:21",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\login_analyzer.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_login_analyzer.py",
+    "method": "test_login_form_detection",
+    "execution_time": 0.0,
+    "category": "selenium"
+  },
+  "test_login_failure_detection": {
+    "passed": true,
+    "description": "ログイン失敗時のエラーメッセージを適切に検出できる",
+    "execution_timestamp": "2025-04-07 22:11:13",
+    "source_file": "C:\\dev\\CODE\\ebis_bq\\tests\\file\\selenium\\login_analyzer.py",
+    "test_file": "C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_login_analyzer.py",
+    "method": "test_login_failure_detection",
+    "execution_time": 0.0,
+    "category": "selenium"
+  }
+}

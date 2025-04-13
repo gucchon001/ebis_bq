@@ -100,7 +100,6 @@ if (-not (Test-Path "requirements.txt")) {
 }
 
 # 必要に応じてパッケージをインストール
-$requirementsContent = Get-Content -Path "requirements.txt" -Raw
 $currentHash = Get-FileHash -Path "requirements.txt" -Algorithm SHA256
 $currentHashValue = $currentHash.Hash
 

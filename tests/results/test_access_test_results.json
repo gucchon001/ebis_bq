@@ -1,0 +1,39 @@
+{
+  "test_timestamp": "2025-04-07 22:20:23",
+  "category": "その他",
+  "test_project_structure": {
+    "passed": true,
+    "description": "フォルダ構成が正しいかを確認",
+    "execution_time": 0.000461499992525205,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_config_files": {
+    "passed": true,
+    "description": "config フォルダ内の重要ファイルが存在するか確認",
+    "execution_time": 0.00028219999512657523,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_src_modules": {
+    "passed": true,
+    "description": "src/modules フォルダが存在するか確認",
+    "execution_time": 0.00021940001170150936,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_utils_access": {
+    "passed": true,
+    "description": "src/utils フォルダが存在するか確認",
+    "execution_time": 0.0006936999852769077,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  },
+  "test_logs_directory": {
+    "passed": true,
+    "description": "logs フォルダへのアクセス確認",
+    "execution_time": 0.0004366000066511333,
+    "execution_timestamp": "2025-04-07 22:03:40",
+    "error_log": null
+  }
+}

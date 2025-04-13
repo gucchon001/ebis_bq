@@ -1,0 +1,47 @@
+{
+  "test_timestamp": "2025-04-09 08:50:34",
+  "category": "その他",
+  "test_ebis_login_initialization": {
+    "passed": true,
+    "description": "EbisLoginPageクラスの初期化テスト",
+    "execution_time": 3.8152425000444055,
+    "execution_timestamp": "2025-04-09 08:49:37",
+    "error_log": null
+  },
+  "test_ebis_login_with_valid_credentials": {
+    "passed": false,
+    "description": "有効な認証情報でのログインテスト",
+    "execution_time": 4.378210599999875,
+    "execution_timestamp": "2025-04-09 08:49:43",
+    "error_log": {
+      "type": "LoginError",
+      "message": "アドエビスログイン中に予期しないエラーが発生しました: 最大試行回数 (2) に達しました",
+      "traceback": "  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 341, in from_call\n    result: Optional[TResult] = func()\n                                ^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 262, in <lambda>\n    lambda: ihook(item=item, **kwds), when=when, reraise=reraise\n            ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_hooks.py\", line 513, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 182, in _multicall\n    return outcome.get_result()\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_result.py\", line 100, in get_result\n    raise exc.with_traceback(exc.__traceback__)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 103, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 177, in pytest_runtest_call\n    raise e\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 169, in pytest_runtest_call\n    item.runtest()\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\python.py\", line 1792, in runtest\n    self.ihook.pytest_pyfunc_call(pyfuncitem=self)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_hooks.py\", line 513, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 139, in _multicall\n    raise exception.with_traceback(exception.__traceback__)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 103, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\python.py\", line 194, in pytest_pyfunc_call\n    result = testfunction(**testargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_ebis_login.py\", line 264, in test_ebis_login_with_valid_credentials\n    login_result = ebis_login.login_to_ebis()\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\src\\modules\\selenium\\login_page.py\", line 56, in wrapper\n    return func(self, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\src\\modules\\ebis_login.py\", line 182, in login_to_ebis\n    raise LoginError(error_message)\n"
+    }
+  },
+  "test_post_login_notice_handling": {
+    "passed": true,
+    "description": "ログイン後の通知処理テスト",
+    "execution_time": 31.811117200006265,
+    "execution_timestamp": "2025-04-09 08:50:15",
+    "error_log": null
+  },
+  "test_navigate_to_dashboard": {
+    "passed": false,
+    "description": "ダッシュボードへの移動テスト",
+    "execution_time": 4.2065239000367,
+    "execution_timestamp": "2025-04-09 08:50:19",
+    "error_log": {
+      "type": "AssertionError",
+      "message": "ダッシュボードURLに遷移していません: https://id.ebis.ne.jp/\nassert 'https://bishamon.ebis.ne.jp/dashboard' in 'https://id.ebis.ne.jp/'\n +  where 'https://bishamon.ebis.ne.jp/dashboard' = <src.modules.ebis_login.EbisLoginPage object at 0x0000020C3D2A2F10>.dashboard_url",
+      "traceback": "  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 341, in from_call\n    result: Optional[TResult] = func()\n                                ^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 262, in <lambda>\n    lambda: ihook(item=item, **kwds), when=when, reraise=reraise\n            ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_hooks.py\", line 513, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 182, in _multicall\n    return outcome.get_result()\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_result.py\", line 100, in get_result\n    raise exc.with_traceback(exc.__traceback__)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 103, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 177, in pytest_runtest_call\n    raise e\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\runner.py\", line 169, in pytest_runtest_call\n    item.runtest()\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\python.py\", line 1792, in runtest\n    self.ihook.pytest_pyfunc_call(pyfuncitem=self)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_hooks.py\", line 513, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 139, in _multicall\n    raise exception.with_traceback(exception.__traceback__)\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\pluggy\\_callers.py\", line 103, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\venv\\Lib\\site-packages\\_pytest\\python.py\", line 194, in pytest_pyfunc_call\n    result = testfunction(**testargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\dev\\CODE\\ebis_bq\\tests\\test_file\\selenium\\test_ebis_login.py\", line 346, in test_navigate_to_dashboard\n    assert ebis_login.dashboard_url in current_url, f\"ダッシュボードURLに遷移していません: {current_url}\"\n"
+    }
+  },
+  "test_error_handling_with_invalid_credentials": {
+    "passed": true,
+    "description": "無効な認証情報での例外処理テスト",
+    "execution_time": 8.46027449995745,
+    "execution_timestamp": "2025-04-09 08:50:27",
+    "error_log": null
+  }
+}
