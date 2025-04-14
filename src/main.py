@@ -218,7 +218,7 @@ def main():
         logger.error(f"CSVダウンロードエラー: {e}")
         return 1
     except Exception as e:
-        logger.error(f"予期せぬエラー: {e}")
+        logger.error(f"予期しないエラー: {e}")
         logger.error(traceback.format_exc())
         return 1
 
