@@ -38,10 +38,20 @@ def parse_args():
     parser.add_argument('--start', help='開始日（YYYY-MM-DD形式）', default=None)
     parser.add_argument('--end', help='終了日（YYYY-MM-DD形式）', default=None)
     parser.add_argument('--download-dir', help='ダウンロードディレクトリ', default="data/downloads")
-    parser.add_argument('--type', help='ダウンロードするレポートの種類（detailed_analysis, cv_attribute, all）', 
-                       default="all", choices=["detailed_analysis", "cv_attribute", "all"])
+    parser.add_argument('--type', 
+                       help='ダウンロードするレポートの種類（detailed_analysis, cv_attribute/conversion_attribute, all）', 
+                       default="all", 
+                       choices=["detailed_analysis", "cv_attribute", "conversion_attribute", "all"])
+    parser.add_argument('--use-yesterday', help='「昨日」の日付を使用する（デフォルト：True）', 
+                       action='store_false', dest='use_yesterday', default=True)
     
-    return parser.parse_args()
+    args = parser.parse_args()
+    
+    # conversion_attribute を cv_attribute に統一
+    if args.type == "conversion_attribute":
+        args.type = "cv_attribute"
+    
+    return args
 
 def initialize_environment() -> bool:
     """環境を初期化します"""
@@ -140,13 +150,15 @@ def main():
                         csv_file = downloader.download_csv(
                             csv_type=report_type,
                             start_date=args.start,
-                            end_date=args.end
+                            end_date=args.end,
+                            use_yesterday=args.use_yesterday
                         )
                     elif report_type == "cv_attribute":
                         # コンバージョン属性レポートのダウンロード
                         csv_file = downloader.download_cv_attribute_csv(
                             start_date=args.start,
-                            end_date=args.end
+                            end_date=args.end,
+                            use_yesterday=args.use_yesterday
                         )
                     
                     if csv_file:

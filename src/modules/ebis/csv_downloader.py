@@ -648,81 +648,17 @@ class EbisCSVDownloader:
             # 分析ページに移動
             self.navigate_to_analysis_page()
             
-            # 「昨日」の設定を優先
+            # 日付範囲を設定
             if use_yesterday:
-                self.logger.info("「昨日」の日付を使用します")
-                # 日付ピッカーのトリガーをクリック
-                if not self.browser.click_element_by_selector(
-                    self.common_selector_group, "date_picker_trigger", timeout=self.element_timeout
-                ):
-                    self.logger.error("日付ピッカーのトリガーが見つかりませんでした")
-                    self.browser.save_screenshot("date_picker_trigger_not_found")
-                    # エラーだが処理を続行
-                else:
-                    # 日付ピッカーが表示されるまで待機
-                    self.logger.info("日付ピッカーの表示を待機しています...")
-                    time.sleep(2)
-                    
-                    # 「昨日」を選択
-                    self.logger.info("「昨日」を選択します")
-                    if not self.browser.click_element_by_selector(
-                        self.common_selector_group, "yesterday_date_input", timeout=self.element_timeout
-                    ):
-                        self.logger.error("「昨日」の選択肢が見つかりませんでした")
-                        self.browser.save_screenshot("yesterday_option_not_found")
-                        # エラーが発生した場合、通常の日付設定に切り替え
-                    else:
-                        # 「適用」ボタンをクリック
-                        self.logger.info("適用ボタンをクリックします")
-                        if not self.browser.click_element_by_selector(
-                            self.common_selector_group, "apply_button", timeout=self.element_timeout
-                        ):
-                            self.logger.error("適用ボタンが見つかりませんでした")
-                            self.browser.save_screenshot("apply_button_not_found")
-                            # エラーだが処理を続行
-                        else:
-                            # 変更が反映されるまで待機
-                            self.logger.debug(f"日付変更の反映を待機しています... ({self.page_load_wait}秒)")
-                            time.sleep(self.page_load_wait)
-                            self.logger.info("「昨日」の日付設定が完了しました")
-            # 「昨日」が無効で日付指定がある場合
+                # 共通の「昨日」設定メソッドを使用
+                self._set_yesterday_common("詳細分析レポート")
             elif start_date is not None or end_date is not None:
                 self.set_date_range(start_date, end_date)
             else:
                 self.logger.info("開始日と終了日が指定されていないため、デフォルトの日付範囲を使用します")
             
-            # トラフィックタイプを指定している場合のみタブを選択する
-            if traffic_type != "all":
-                # トラフィックタイプタブをクリック（該当するセレクタが存在する場合のみ）
-                selector_name = f"{traffic_type}_traffic_tab"
-                self.logger.info(f"{traffic_type}トラフィックタブを選択します")
-                
-                # まずセレクタが存在するか確認
-                if self.browser.get_element(self.common_selector_group, selector_name, wait_time=2):
-                    if not self.browser.click_element_by_selector(self.common_selector_group, selector_name, timeout=self.element_timeout):
-                        self.logger.warning(f"{traffic_type}トラフィックタブが見つからないか、クリックできませんでした。全トラフィックタブを試みます。")
-                        # 全トラフィックタブを代わりに試す
-                        if not self.browser.click_element_by_selector(self.common_selector_group, "all_traffic_tab", timeout=self.element_timeout):
-                            self.logger.warning("全トラフィックタブもクリックできませんでした。処理を続行します。")
-                            # エラー画面を保存
-                            self.browser.save_screenshot(f"{traffic_type}_traffic_tab_not_found")
-                else:
-                    self.logger.warning(f"{traffic_type}トラフィックタブが存在しません。このステップをスキップします。")
-                    self.browser.save_screenshot(f"{traffic_type}_traffic_tab_not_exist")
-                    
-                # タブ切り替え後の読み込みを待機
-                self.logger.debug(f"タブ切り替え後の読み込みを待機しています... ({self.page_load_wait}秒)")
-                time.sleep(self.page_load_wait)
-            else:
-                # 全トラフィックタブをクリック
-                self.logger.info("全トラフィックタブを選択します")
-                if not self.browser.click_element_by_selector(self.common_selector_group, "all_traffic_tab", timeout=self.element_timeout):
-                    self.logger.warning("全トラフィックタブがクリックできませんでした。処理を続行します。")
-                    self.browser.save_screenshot("all_traffic_tab_not_found")
-                
-                # タブ切り替え後の読み込みを待機
-                self.logger.debug(f"タブ切り替え後の読み込みを待機しています... ({self.page_load_wait}秒)")
-                time.sleep(self.page_load_wait)
+            # トラフィックタイプの選択
+            self._select_traffic_tab(traffic_type)
             
             # ビューボタンをクリック
             self.logger.info("ビューボタンをクリックします")
@@ -763,203 +699,57 @@ class EbisCSVDownloader:
             self.browser.save_screenshot("download_csv_error")
             raise CSVDownloadError(error_msg)
 
-    def download_cv_attribute_csv(self, start_date=None, end_date=None, output_path=None, csv_type="conversion_attribute", use_yesterday=True):
+    def _select_traffic_tab(self, traffic_type: str = "all"):
         """
-        コンバージョン属性レポートCSVをダウンロードします
-
+        トラフィックタイプのタブを選択します
+        
         Args:
-            start_date (str, optional): 開始日 (YYYY-MM-DD形式)
-            end_date (str, optional): 終了日 (YYYY-MM-DD形式)
-            output_path (str, optional): ダウンロードしたCSVの保存先パス
-            csv_type (str, optional): CSVの種類（デフォルト: "conversion_attribute"）
-            use_yesterday (bool, optional): 「昨日」の日付を使用するかどうか（デフォルト: True）
+            traffic_type (str): 選択するトラフィックタイプ（"all"など）
+        """
+        if traffic_type != "all":
+            # トラフィックタイプタブをクリック（該当するセレクタが存在する場合のみ）
+            selector_name = f"{traffic_type}_traffic_tab"
+            self.logger.info(f"{traffic_type}トラフィックタブを選択します")
+            
+            # まずセレクタが存在するか確認
+            if self.browser.get_element(self.common_selector_group, selector_name, wait_time=2):
+                if not self.browser.click_element_by_selector(self.common_selector_group, selector_name, timeout=self.element_timeout):
+                    self.logger.warning(f"{traffic_type}トラフィックタブが見つからないか、クリックできませんでした。全トラフィックタブを試みます。")
+                    # 全トラフィックタブを代わりに試す
+                    if not self.browser.click_element_by_selector(self.common_selector_group, "all_traffic_tab", timeout=self.element_timeout):
+                        self.logger.warning("全トラフィックタブもクリックできませんでした。処理を続行します。")
+                        # エラー画面を保存
+                        self.browser.save_screenshot(f"{traffic_type}_traffic_tab_not_found")
+            else:
+                self.logger.warning(f"{traffic_type}トラフィックタブが存在しません。このステップをスキップします。")
+                self.browser.save_screenshot(f"{traffic_type}_traffic_tab_not_exist")
+                
+            # タブ切り替え後の読み込みを待機
+            self.logger.debug(f"タブ切り替え後の読み込みを待機しています... ({self.page_load_wait}秒)")
+            time.sleep(self.page_load_wait)
+        else:
+            # 全トラフィックタブをクリック
+            self.logger.info("全トラフィックタブを選択します")
+            if not self.browser.click_element_by_selector(self.common_selector_group, "all_traffic_tab", timeout=self.element_timeout):
+                self.logger.warning("全トラフィックタブがクリックできませんでした。処理を続行します。")
+                self.browser.save_screenshot("all_traffic_tab_not_found")
+            
+            # タブ切り替え後の読み込みを待機
+            self.logger.debug(f"タブ切り替え後の読み込みを待機しています... ({self.page_load_wait}秒)")
+            time.sleep(self.page_load_wait)
 
+    def _set_yesterday_common(self, context_name=""):
+        """
+        日付範囲を「昨日」に設定する共通処理
+        
+        Args:
+            context_name (str): 設定コンテキスト名（ログ出力用）
+        
         Returns:
-            str: ダウンロードされたCSVファイルのパス
-
-        Raises:
-            CSVDownloadError: CSVダウンロード中にエラーが発生した場合
+            bool: 成功した場合はTrue、失敗した場合はFalse
         """
         try:
-            date_option = "「昨日」" if use_yesterday else f"{start_date or '指定なし'} から {end_date or '指定なし'}"
-            self.logger.info(f"コンバージョン属性レポートCSVのダウンロードを開始します（期間: {date_option}）")
-            
-            # コンバージョン属性ページに移動
-            self._navigate_to_cv_attribute_page()
-            
-            # 日付範囲を設定
-            if use_yesterday:
-                self._set_yesterday_for_cv_attribute()
-            elif start_date or end_date:
-                self._set_date_range_for_cv_attribute(start_date, end_date)
-            else:
-                self.logger.info("日付範囲の指定がないため、デフォルトの日付範囲を使用します")
-            
-            # 共通のCSVダウンロード処理を呼び出す
-            file_pattern = 'cv_attr'
-            return self._export_and_download_csv(file_pattern, output_path)
-            
-        except CSVDownloadError:
-            # 既に詳細なエラーメッセージが記録されている場合は再スロー
-            raise
-        except Exception as e:
-            error_msg = f"コンバージョン属性レポートCSVのダウンロード中に予期しないエラーが発生しました: {e}"
-            self.logger.error(error_msg)
-            self.browser.save_screenshot("cv_attribute_csv_unexpected_error")
-            raise CSVDownloadError(error_msg) from e
-            
-    def _set_date_range_for_cv_attribute(self, start_date=None, end_date=None):
-        """
-        コンバージョン属性レポートの日付範囲を設定します
-
-        Args:
-            start_date (str, optional): 開始日（YYYY-MM-DD形式）
-            end_date (str, optional): 終了日（YYYY-MM-DD形式）
-        """
-        if not start_date and not end_date:
-            self.logger.info("日付範囲が指定されていないため、デフォルトの日付範囲を使用します")
-            return
-
-        try:
-            self.logger.info(f"日付範囲を設定します: {start_date} 〜 {end_date}")
-            
-            # ページが完全に読み込まれてUI要素が利用可能になるまで待機
-            self.logger.info("日付操作の前に、UIが完全に読み込まれることを確認します...")
-            time.sleep(3)  # 最初に3秒待機して安定させる
-            
-            # セレクタファイルからセレクタを取得
-            date_picker_selector = "cv_attribute_date_picker"
-            
-            # 日付ピッカー要素が存在するか先に確認
-            try:
-                date_picker_element = self.browser.get_element("common", date_picker_selector, wait_time=5)
-                if date_picker_element:
-                    self.logger.info("日付ピッカー要素が見つかりました")
-                else:
-                    self.logger.warning("日付ピッカー要素が見つかりません。XPATHでの検索を試みます")
-            except Exception as e:
-                self.logger.warning(f"日付ピッカー要素の検索中にエラー: {e}")
-                
-            # 日付ピッカーをクリック
-            if not self.browser.click_element_by_selector("common", date_picker_selector, wait_time=5, timeout=self.element_timeout):
-                self.logger.warning("日付ピッカーセレクタが見つかりませんでした。XPATHを使用して試行します。")
-                # セレクタが見つからない場合、XPATHを使用
-                date_picker_xpath = "//div[contains(@class, 'date-range-picker') or contains(@class, 'datepicker')]"
-                try:
-                    element = self.browser.driver.find_element(By.XPATH, date_picker_xpath)
-                    element.click()
-                    self.logger.info("XPATHを使用して日付ピッカーをクリックしました")
-                except Exception as e:
-                    self.logger.warning(f"日付ピッカーが見つかりませんでした: {e}。日付設定をスキップします。")
-                    return
-            
-            self.logger.info("日付ピッカーをクリックしました")
-            
-            # 日付ピッカーが表示されるまで待機
-            self.logger.info("日付ピッカーの表示を待機しています...")
-            time.sleep(2)
-            
-            # 日付入力フィールドが表示されるのを待機
-            try:
-                from selenium.webdriver.common.by import By
-                date_input_selector = "input[type='text'], .date-input, [placeholder*='日付']"
-                
-                if self.browser.wait_for_element(By.CSS_SELECTOR, date_input_selector, timeout=5):
-                    self.logger.info("日付入力フィールドが表示されました")
-                else:
-                    self.logger.warning("日付入力フィールドの表示が確認できませんでしたが処理を続行します")
-            except Exception as wait_error:
-                self.logger.warning(f"日付入力フィールド待機中にエラー: {wait_error}")
-            
-            # 開始日を設定
-            if start_date:
-                if not self.browser.input_text_by_selector("common", "cv_attribute_start_date_input", start_date, clear_first=True, wait_time=3, timeout=self.element_timeout):
-                    self.logger.warning("開始日入力フィールドが見つかりませんでした。XPATHを使用して試行します。")
-                    # XPATHで検索
-                    start_input_xpath = "//input[contains(@id, 'start') or contains(@placeholder, '開始')]"
-                    try:
-                        element = self.browser.driver.find_element(By.XPATH, start_input_xpath)
-                        element.clear()
-                        element.send_keys(start_date)
-                        self.logger.info(f"XPATHを使用して開始日を設定しました: {start_date}")
-                    except Exception as e:
-                        self.logger.warning(f"開始日入力フィールドが見つかりませんでした: {e}")
-                else:
-                    self.logger.info(f"開始日を設定しました: {start_date}")
-            
-            # 開始日入力後に少し待機
-            time.sleep(1)
-            
-            # 終了日を設定
-            if end_date:
-                if not self.browser.input_text_by_selector("common", "cv_attribute_end_date_input", end_date, clear_first=True, wait_time=3, timeout=self.element_timeout):
-                    self.logger.warning("終了日入力フィールドが見つかりませんでした。XPATHを使用して試行します。")
-                    # XPATHで検索
-                    end_input_xpath = "//input[contains(@id, 'end') or contains(@placeholder, '終了')]"
-                    try:
-                        element = self.browser.driver.find_element(By.XPATH, end_input_xpath)
-                        element.clear()
-                        element.send_keys(end_date)
-                        self.logger.info(f"XPATHを使用して終了日を設定しました: {end_date}")
-                    except Exception as e:
-                        self.logger.warning(f"終了日入力フィールドが見つかりませんでした: {e}")
-                else:
-                    self.logger.info(f"終了日を設定しました: {end_date}")
-            
-            # 終了日入力後に少し待機
-            time.sleep(1)
-            
-            # 適用ボタンを押す
-            if not self.browser.click_element_by_selector("common", "cv_attribute_date_apply_button", wait_time=3, timeout=self.element_timeout):
-                self.logger.warning("適用ボタンが見つかりませんでした。XPATHを使用して試行します。")
-                # XPATHで検索
-                apply_button_xpath = "//button[contains(text(), '適用') or contains(text(), 'Apply') or contains(@class, 'apply')]"
-                try:
-                    element = self.browser.driver.find_element(By.XPATH, apply_button_xpath)
-                    element.click()
-                    self.logger.info("XPATHを使用して日付範囲の適用ボタンをクリックしました")
-                except Exception as e:
-                    self.logger.warning(f"適用ボタンが見つかりませんでした: {e}。日付設定が適用されていない可能性があります。")
-                    return
-            else:
-                self.logger.info("日付範囲の適用ボタンをクリックしました")
-            
-            # 日付が適用されるまで十分待機
-            self.logger.info("日付範囲の適用を待機しています...")
-            time.sleep(3)
-            
-            # 日付範囲が適用されたか確認する（可能であれば）
-            try:
-                element = self.browser.get_element("common", "cv_attribute_date_display", wait_time=2)
-                if element and element.is_displayed():
-                    date_text = element.text
-                    self.logger.info(f"設定された日付範囲: {date_text}")
-                else:
-                    # 確認はできなかったが、エラーにはしない
-                    self.logger.info("日付範囲が適用されました（表示確認なし）")
-            except Exception as date_check_error:
-                self.logger.warning(f"日付範囲の確認中にエラーが発生しましたが、処理を続行します: {date_check_error}")
-            
-            # ページが更新された場合のための待機
-            self.logger.info("日付適用後のページ更新を待機しています...")
-            time.sleep(3)
-            
-            # スクリーンショットを取得
-            self.browser.save_screenshot("cv_attribute_date_range_set")
-            
-        except Exception as e:
-            error_msg = f"コンバージョン属性レポートの日付範囲設定中にエラーが発生しました: {e}"
-            self.logger.error(error_msg)
-            self.browser.save_screenshot("cv_attribute_date_range_error")
-            # 日付設定エラーはプロセスを停止するほどのエラーではないため、例外を投げずに警告だけ表示
-            self.logger.warning("日付範囲設定エラーが発生しましたが、デフォルト範囲で続行します")
-
-    def _set_yesterday_for_cv_attribute(self):
-        """
-        コンバージョン属性レポートの日付範囲を「昨日」に設定します
-        """
-        try:
-            self.logger.info("コンバージョン属性レポートの日付範囲を「昨日」に設定します")
+            self.logger.info(f"{context_name}の日付範囲を「昨日」に設定します")
             
             # ページが完全に読み込まれていることを確認
             time.sleep(3)
@@ -975,7 +765,7 @@ class EbisCSVDownloader:
                     self.logger.info("XPATHを使用して日付ピッカーをクリックしました")
                 except Exception as e:
                     self.logger.warning(f"日付ピッカーが見つかりませんでした: {e}。日付設定をスキップします。")
-                    return
+                    return False
             
             # 日付ピッカーが表示されるまで待機
             self.logger.info("日付ピッカーの表示を待機しています...")
@@ -995,7 +785,7 @@ class EbisCSVDownloader:
                     self.logger.info("XPATHを使用して「昨日」をクリックしました")
                 except Exception as e:
                     self.logger.warning(f"XPATHでも「昨日」が見つかりませんでした: {e}")
-                    return
+                    return False
             
             # 適用ボタンをクリック
             self.logger.info("適用ボタンをクリックします")
@@ -1009,18 +799,20 @@ class EbisCSVDownloader:
                     self.logger.info("XPATHを使用して適用ボタンをクリックしました")
                 except Exception as e:
                     self.logger.warning(f"適用ボタンが見つかりませんでした: {e}。日付設定が適用されていない可能性があります。")
-                    return
+                    return False
             
             # 日付が適用されるまで待機
             self.logger.info("日付範囲の適用を待機しています...")
             time.sleep(3)
             
             self.logger.info("「昨日」の日付設定が完了しました")
+            return True
             
         except Exception as e:
             self.logger.warning(f"「昨日」の日付設定中にエラーが発生しました: {e}")
-            self.browser.save_screenshot("set_yesterday_error_cv_attribute")
+            self.browser.save_screenshot(f"set_yesterday_error_{context_name}")
             # エラーをスローしない（処理を継続）
+            return False
 
     def _add_date_column(self, csv_file_path: str) -> str:
         """
@@ -1135,3 +927,49 @@ class EbisCSVDownloader:
         except Exception as e:
             self.logger.error(f"文字コード検出中にエラー: {e}")
             return default_encoding
+
+    def download_cv_attribute_csv(self, start_date=None, end_date=None, output_path=None, csv_type="conversion_attribute", use_yesterday=True):
+        """
+        コンバージョン属性レポートCSVをダウンロードします
+
+        Args:
+            start_date (str, optional): 開始日 (YYYY-MM-DD形式)
+            end_date (str, optional): 終了日 (YYYY-MM-DD形式)
+            output_path (str, optional): ダウンロードしたCSVの保存先パス
+            csv_type (str, optional): CSVの種類（デフォルト: "conversion_attribute"）
+            use_yesterday (bool, optional): 「昨日」の日付を使用するかどうか（デフォルト: True）
+
+        Returns:
+            str: ダウンロードされたCSVファイルのパス
+
+        Raises:
+            CSVDownloadError: CSVダウンロード中にエラーが発生した場合
+        """
+        try:
+            date_option = "「昨日」" if use_yesterday else f"{start_date or '指定なし'} から {end_date or '指定なし'}"
+            self.logger.info(f"コンバージョン属性レポートCSVのダウンロードを開始します（期間: {date_option}）")
+            
+            # コンバージョン属性ページに移動
+            self._navigate_to_cv_attribute_page()
+            
+            # 日付範囲を設定
+            if use_yesterday:
+                # 共通の「昨日」設定メソッドを使用
+                self._set_yesterday_common("コンバージョン属性レポート")
+            elif start_date or end_date:
+                self._set_date_range_for_cv_attribute(start_date, end_date)
+            else:
+                self.logger.info("日付範囲の指定がないため、デフォルトの日付範囲を使用します")
+            
+            # 共通のCSVダウンロード処理を呼び出す
+            file_pattern = 'cv_attr'
+            return self._export_and_download_csv(file_pattern, output_path)
+            
+        except CSVDownloadError:
+            # 既に詳細なエラーメッセージが記録されている場合は再スロー
+            raise
+        except Exception as e:
+            error_msg = f"コンバージョン属性レポートCSVのダウンロード中に予期しないエラーが発生しました: {e}"
+            self.logger.error(error_msg)
+            self.browser.save_screenshot("cv_attribute_csv_unexpected_error")
+            raise CSVDownloadError(error_msg) from e
